@@ -1,0 +1,128 @@
+type CoinageCreated @entity(immutable: true) {
+  id: Bytes!
+  layer2: Bytes! # address
+  coinage: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Comitted @entity(immutable: true) {
+  id: Bytes!
+  layer2: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type CommissionRateSet @entity(immutable: true) {
+  id: Bytes!
+  layer2: Bytes! # address
+  previousRate: BigInt! # uint256
+  newRate: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type CommitLog1 @entity(immutable: true) {
+  id: Bytes!
+  totalStakedAmount: BigInt! # uint256
+  totalSupplyOfWTON: BigInt! # uint256
+  prevTotalSupply: BigInt! # uint256
+  nextTotalSupply: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OnSnapshot @entity(immutable: true) {
+  id: Bytes!
+  snapshotId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Paused @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoleAdminChanged @entity(immutable: true) {
+  id: Bytes!
+  role: Bytes! # bytes32
+  previousAdminRole: Bytes! # bytes32
+  newAdminRole: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoleGranted @entity(immutable: true) {
+  id: Bytes!
+  role: Bytes! # bytes32
+  account: Bytes! # address
+  sender: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RoleRevoked @entity(immutable: true) {
+  id: Bytes!
+  role: Bytes! # bytes32
+  account: Bytes! # address
+  sender: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SeigGiven @entity(immutable: true) {
+  id: Bytes!
+  layer2: Bytes! # address
+  totalSeig: BigInt! # uint256
+  stakedSeig: BigInt! # uint256
+  unstakedSeig: BigInt! # uint256
+  powertonSeig: BigInt! # uint256
+  pseig: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Unpaused @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UnstakeLog @entity(immutable: true) {
+  id: Bytes!
+  coinageBurnAmount: BigInt! # uint256
+  totBurnAmount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type UpdatedSeigniorage @entity(immutable: true) {
+  id: Bytes!
+  layer2: Bytes! # address
+  blockNumber: BigInt! # uint256
+  prevTotal: BigInt! # uint256
+  nextTotal: BigInt! # uint256
+  oldTotFactor: BigInt! # uint256
+  oldCoinageFactor: BigInt! # uint256
+  nextTotFactor: BigInt! # uint256
+  nextCoinageFactor: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}

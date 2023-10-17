@@ -1,0 +1,59 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: SeigManager
+    network: goerli
+    source:
+      address: "0xa790Bb30F80e3b9b38Efaa8fE47CE53A77A7C1CF"
+      abi: SeigManager
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - CoinageCreated
+        - Comitted
+        - CommissionRateSet
+        - CommitLog1
+        - OnSnapshot
+        - Paused
+        - RoleAdminChanged
+        - RoleGranted
+        - RoleRevoked
+        - SeigGiven
+        - Unpaused
+        - UnstakeLog
+        - UpdatedSeigniorage
+      abis:
+        - name: SeigManager
+          file: ./abis/SeigManager.json
+      eventHandlers:
+        - event: CoinageCreated(indexed address,address)
+          handler: handleCoinageCreated
+        - event: Comitted(indexed address)
+          handler: handleComitted
+        - event: CommissionRateSet(indexed address,uint256,uint256)
+          handler: handleCommissionRateSet
+        - event: CommitLog1(uint256,uint256,uint256,uint256)
+          handler: handleCommitLog1
+        - event: OnSnapshot(uint256)
+          handler: handleOnSnapshot
+        - event: Paused(address)
+          handler: handlePaused
+        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
+          handler: handleRoleAdminChanged
+        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleGranted
+        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
+          handler: handleRoleRevoked
+        - event: SeigGiven(indexed address,uint256,uint256,uint256,uint256,uint256)
+          handler: handleSeigGiven
+        - event: Unpaused(address)
+          handler: handleUnpaused
+        - event: UnstakeLog(uint256,uint256)
+          handler: handleUnstakeLog
+        - event: UpdatedSeigniorage(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleUpdatedSeigniorage
+      file: ./src/seig-manager.ts
