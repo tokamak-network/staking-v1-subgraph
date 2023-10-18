@@ -4,14 +4,16 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ cd4761/staking-v1-subgraph",
+    "create": "graph create cd4761/staking-v1-subgraph --node https://api.thegraph.com/deploy/",
+    "deploy-goerli": "graph deploy cd4761/staking-v1-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy": "graph deploy cd4761/staking-v1-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "create-local": "graph create --node http://localhost:8020/ cd4761/staking-v1-subgraph",
     "remove-local": "graph remove --node http://localhost:8020/ cd4761/staking-v1-subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cd4761/staking-v1-subgraph",
     "test": "graph test"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.37.7",
+    "@graphprotocol/graph-cli": "0.48.0",
     "@graphprotocol/graph-ts": "0.29.1"
   },
   "devDependencies": { "matchstick-as": "0.5.0" }

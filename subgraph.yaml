@@ -6,7 +6,7 @@ dataSources:
     name: SeigManager
     network: goerli
     source:
-      address: "0xa790Bb30F80e3b9b38Efaa8fE47CE53A77A7C1CF"
+      address: "0x8829Cb37CbbF32404B372113F9Fc3F6cd965c474"
       abi: SeigManager
     mapping:
       kind: ethereum/events
@@ -14,46 +14,51 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - CoinageCreated
-        - Comitted
-        - CommissionRateSet
-        - CommitLog1
-        - OnSnapshot
-        - Paused
-        - RoleAdminChanged
-        - RoleGranted
-        - RoleRevoked
-        - SeigGiven
-        - Unpaused
-        - UnstakeLog
-        - UpdatedSeigniorage
+        # - Comitted
+        # - CommissionRateSet
+        # - OnSnapshot
+        # - Paused
+        # - SeigGiven
+        # - UpdatedSeigniorage
       abis:
         - name: SeigManager
           file: ./abis/SeigManager.json
       eventHandlers:
         - event: CoinageCreated(indexed address,address)
           handler: handleCoinageCreated
-        - event: Comitted(indexed address)
-          handler: handleComitted
-        - event: CommissionRateSet(indexed address,uint256,uint256)
-          handler: handleCommissionRateSet
-        - event: CommitLog1(uint256,uint256,uint256,uint256)
-          handler: handleCommitLog1
-        - event: OnSnapshot(uint256)
-          handler: handleOnSnapshot
-        - event: Paused(address)
-          handler: handlePaused
-        - event: RoleAdminChanged(indexed bytes32,indexed bytes32,indexed bytes32)
-          handler: handleRoleAdminChanged
-        - event: RoleGranted(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleGranted
-        - event: RoleRevoked(indexed bytes32,indexed address,indexed address)
-          handler: handleRoleRevoked
-        - event: SeigGiven(indexed address,uint256,uint256,uint256,uint256,uint256)
-          handler: handleSeigGiven
-        - event: Unpaused(address)
-          handler: handleUnpaused
-        - event: UnstakeLog(uint256,uint256)
-          handler: handleUnstakeLog
-        - event: UpdatedSeigniorage(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
-          handler: handleUpdatedSeigniorage
-      file: ./src/seig-manager.ts
+        # - event: Comitted(indexed address)
+        #   handler: handleComitted
+        # - event: CommissionRateSet(indexed address,uint256,uint256)
+        # - event: OnSnapshot(uint256)
+        #   handler: handleOnSnapshot
+        # - event: SeigGiven(indexed address,uint256,uint256,uint256,uint256,uint256)
+        #   handler: handleSeigGiven
+        # - event: UpdatedSeigniorage(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+        #   handler: handleUpdatedSeigniorage
+      file: ./src/mappings/seig-manager.ts
+  - kind: ethereum
+    name: DepositManger
+    network: goerli
+    source:
+      address: "0xA0458d8af8a25A18959b9cB607c33Bc4973f7849"
+      abi: DepositManger
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Deposited
+        - RoleAdminChanged
+        - WithdrawalProcessed
+        - WithdrawalRequested
+      abis:
+        - name: DepositManger
+          file: ./abis/DepositManger.json
+      eventHandlers:
+        - event: Deposited(indexed address,address,uint256)
+          handler: handleStaked
+        - event: WithdrawalProcessed(indexed address,address,uint256)
+          handler: handleWithdrawal
+        - event: WithdrawalRequested(indexed address,address,uint256)
+          handler: handleUnstaked
+      file: ./src/mappings/deposit-manager.ts
