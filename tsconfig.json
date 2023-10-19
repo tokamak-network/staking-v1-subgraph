@@ -1,4 +1,14 @@
 {
   "extends": "@graphprotocol/graph-ts/types/tsconfig.base.json",
-  "include": ["src"]
+  "include": ["src"],
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/generated": ["./generated"],
+      "@/schema": ["./generated/schema"],
+      "@/candidate": ["./generated/Candidate/Candidate"],
+      "@/constants": ["./constants"],
+      "@/utils": ["./utils"]
+    }
+  }
 }
