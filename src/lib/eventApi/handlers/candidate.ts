@@ -1,21 +1,7 @@
-import {
-  Candidate,
-  User,
-  Layer2,
-  UserStaked,
-  Staked,
-  Restaked,
-  Withdrawal,
-  Unstaked,
-} from "@/schema";
-import {
-  Restaked as RestakedEvent,
-  Staked as StakedEvent,
-  Unstaked as UnstakedEvent,
-  Withdrawal as WithdrawalEvent,
-} from "@/candidate";
+import { Candidate } from "@/schema";
+import { Transactions } from "@/types";
 
-export function getCandidate(event: StakedEvent): Candidate {
+export function getCandidate(event: Transactions): Candidate {
   const candidate = Candidate.load(event.params.candidateIndex.toString());
 
   if (candidate !== null) return candidate;

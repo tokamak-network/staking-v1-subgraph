@@ -1,24 +1,10 @@
-import {
-  Candidate,
-  User,
-  Layer2,
-  UserStaked,
-  Staked,
-  Restaked,
-  Withdrawal,
-  Unstaked,
-} from "@/schema";
-import {
-  Restaked as RestakedEvent,
-  Staked as StakedEvent,
-  Unstaked as UnstakedEvent,
-  Withdrawal as WithdrawalEvent,
-} from "@/candidate";
+import { Staked } from "@/schema";
 import { loadTransaction } from "@/utils";
 import { getCandidate } from "./candidate";
+import { Transactions } from "@/types";
 
 //tx update
-export function handleRestake(event: StakedEvent) {
+export function handleRestake(event: Transactions) {
   const transaction = loadTransaction(event);
   const { txCount, id } = getCandidate(event);
   const stake = new Staked(transaction.id + "#" + txCount.toString());

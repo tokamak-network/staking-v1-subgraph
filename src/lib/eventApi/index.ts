@@ -1,19 +1,16 @@
-import {
-  Restaked as RestakedEvent,
-  Staked as StakedEvent,
-  Unstaked as UnstakedEvent,
-  Withdrawal as WithdrawalEvent,
-} from "@/generated/Candidate/Candidate";
-import { handleCandidate } from "./handlers/candidate";
+import { getCandidate, handleCandidate } from "./handlers/candidate";
 import { handleLayer2 } from "./handlers/layer2";
 import { handleUser } from "./handlers/user";
 import { handleUserStake } from "./handlers/userStake";
 import { handleStake } from "./handlers/stake";
+import { handleRestake } from "./handlers/restake";
+import { handleUnstake } from "./handlers/unstake";
+import { handleWithdraw } from "./handlers/withdraw";
 
-export class stakingV1Event {
-  private _event: StakedEvent;
+export class stakingV1Event<T> {
+  private _event: T;
 
-  constructor(event: StakedEvent) {
+  constructor(event: T) {
     this._event = event;
   }
 
@@ -33,15 +30,15 @@ export class stakingV1Event {
       },
       unstake: () => {
         this._handleCommonEvents();
-        return handleStake(this._event);
+        return handleUnstake(this._event);
       },
       restake: () => {
         this._handleCommonEvents();
-        return handleStake(this._event);
+        return handleRestake(this._event);
       },
       withdraw: () => {
         this._handleCommonEvents();
-        return handleStake(this._event);
+        return handleWithdraw(this._event);
       },
     };
   }
@@ -55,7 +52,7 @@ export class stakingV1Event {
    */
   _handleCommonEvents() {
     handleLayer2(this._event);
-    handleCandidate(this._event);
+    handleCandidate(getCandidate(this._event));
     handleUser(this._event);
     handleUserStake(this._event);
   }

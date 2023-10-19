@@ -1,25 +1,11 @@
-import {
-  Candidate,
-  User,
-  Layer2,
-  UserStaked,
-  Staked,
-  Restaked,
-  Withdrawal,
-  Unstaked,
-} from "@/schema";
-import {
-  Restaked as RestakedEvent,
-  Staked as StakedEvent,
-  Unstaked as UnstakedEvent,
-  Withdrawal as WithdrawalEvent,
-} from "@/candidate";
+import { User } from "@/schema";
 import { loadTransaction } from "@/utils";
 import { getCandidate } from "./candidate";
 import { ZERO_BI } from "@/constants";
+import { Transactions } from "@/types";
 
 //tx update
-export function handleUser(event: StakedEvent) {
+export function handleUser(event: Transactions) {
   let user = User.load(event.params.sender.toString());
 
   if (user === null) {

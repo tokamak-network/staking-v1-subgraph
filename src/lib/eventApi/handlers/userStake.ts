@@ -1,24 +1,10 @@
-import {
-  Candidate,
-  User,
-  Layer2,
-  UserStaked,
-  Staked,
-  Restaked,
-  Withdrawal,
-  Unstaked,
-} from "@/schema";
-import {
-  Restaked as RestakedEvent,
-  Staked as StakedEvent,
-  Unstaked as UnstakedEvent,
-  Withdrawal as WithdrawalEvent,
-} from "@/candidate";
+import { UserStaked } from "@/schema";
 import { loadTransaction } from "@/utils";
 import { getCandidate } from "./candidate";
 import { ZERO_BI } from "@/constants";
+import { Transactions } from "@/types";
 
-export function handleUserStake(event: StakedEvent) {
+export function handleUserStake(event: Transactions) {
   const userId = event.params.sender.toString();
   const stakeId = userId
     .concat("-")
@@ -36,4 +22,9 @@ export function handleUserStake(event: StakedEvent) {
   userStaked.stakedAmount = userStaked.stakedAmount.plus(event.params.amount);
 
   return userStaked.save();
+}
+
+export function test(event: Transactions) {
+  switch (event) {
+  }
 }

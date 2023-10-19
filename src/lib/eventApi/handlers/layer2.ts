@@ -1,22 +1,8 @@
-import {
-  Candidate,
-  User,
-  Layer2,
-  UserStaked,
-  Staked,
-  Restaked,
-  Withdrawal,
-  Unstaked,
-} from "@/schema";
-import {
-  Restaked as RestakedEvent,
-  Staked as StakedEvent,
-  Unstaked as UnstakedEvent,
-  Withdrawal as WithdrawalEvent,
-} from "@/candidate";
+import { Layer2 } from "@/schema";
 import { LAYER2_ADDRESS, ONE_BI } from "@/constants";
+import { Transactions } from "@/types";
 
-export function handleLayer2(event: StakedEvent) {
+export function handleLayer2(event: Transactions) {
   // factory update
   let layer2 = Layer2.load(LAYER2_ADDRESS);
   if (layer2 === null) layer2 = new Layer2(LAYER2_ADDRESS);
