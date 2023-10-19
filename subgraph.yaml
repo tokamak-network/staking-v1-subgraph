@@ -37,33 +37,32 @@ dataSources:
         # - event: UpdatedSeigniorage(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
         #   handler: handleUpdatedSeigniorage
       file: ./src/mappings/seig-manager.ts
-  # - kind: ethereum
-  #   name: DepositManager
-  #   network: goerli
-  #   source:
-  #     address: "0xA0458d8af8a25A18959b9cB607c33Bc4973f7849"
-  #     abi: DepositManager
-  #      startBlock: 9874600
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     entities:
-  #       - Deposited
-  #       - RoleAdminChanged
-  #       - WithdrawalProcessed
-  #       - WithdrawalRequested
-  #     abis:
-  #       - name: DepositManager
-  #         file: ./abis/DepositManager.json
-  #     eventHandlers:
-  #       - event: Deposited(indexed address,address,uint256)
-  #         handler: handleStaked
-  #       - event: WithdrawalProcessed(indexed address,address,uint256)
-  #         handler: handleWithdrawal
-  #       - event: WithdrawalRequested(indexed address,address,uint256)
-  #         handler: handleUnstaked
-  #     file: ./src/mappings/deposit-manager.ts
+  - kind: ethereum
+    name: DepositManager
+    network: goerli
+    source:
+      address: "0xA0458d8af8a25A18959b9cB607c33Bc4973f7849"
+      abi: DepositManager
+      startBlock: 9874600
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Deposited
+        - WithdrawalProcessed
+        - WithdrawalRequested
+      abis:
+        - name: DepositManager
+          file: ./abis/DepositManager.json
+      eventHandlers:
+        - event: Deposited(indexed address,address,uint256)
+          handler: handleStaked
+        - event: WithdrawalProcessed(indexed address,address,uint256)
+          handler: handleWithdrawal
+        - event: WithdrawalRequested(indexed address,address,uint256)
+          handler: handleUnstaked
+      file: ./src/mappings/deposit-manager.ts
   - kind: ethereum
     name: DAOCommittee
     network: goerli
