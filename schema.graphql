@@ -7,21 +7,21 @@ type Factory @entity {
 
 type Candidate @entity {
   # candidate index
-  id: ID!
-  candidate: Bytes! # address
+  id: Bytes!
+  candidate: Bytes!
   candidateContract: Bytes! # address
   name: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-	owner: Bytes!
-  coinage: Bytes!
+  #blockNumber: BigInt!
+  #blockTimestamp: BigInt!
+	#owner: Bytes!
+  #coinage: Bytes!
 	# staked amount of this candidate
 	stakedAmount: BigInt!
   pendingWithdrawalAmount: BigInt!
-  txCount: BigInt!
+  #txCount: BigInt!
   commissionRate: BigDecimal!
   # user info who are staking to this candidate
-	user: [User!]!
+	user: [User!]
   # derived values
   staked: [Staked]! @derivedFrom(field: "candidate")
   unstaked: [Unstaked]! @derivedFrom(field: "candidate")
@@ -171,7 +171,6 @@ type UpdatedSeigniorage @entity(immutable: true) {
   oldCoinageFactor: BigInt! # uint256
   nextTotFactor: BigInt! # uint256
   nextCoinageFactor: BigInt! # uint256
-  blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }

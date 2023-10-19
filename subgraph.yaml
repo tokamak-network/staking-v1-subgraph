@@ -8,6 +8,7 @@ dataSources:
     source:
       address: "0x8829Cb37CbbF32404B372113F9Fc3F6cd965c474"
       abi: SeigManager
+      startBlock: 9874600
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -42,6 +43,7 @@ dataSources:
   #   source:
   #     address: "0xA0458d8af8a25A18959b9cB607c33Bc4973f7849"
   #     abi: DepositManager
+  #      startBlock: 9874600
   #   mapping:
   #     kind: ethereum/events
   #     apiVersion: 0.0.7
@@ -66,8 +68,9 @@ dataSources:
     name: DAOCommittee
     network: goerli
     source:
-      address: "0xfE4bA125422BAbf58Ef12fd7F099517dc4A928F5"
+      address: "0x3C5ffEe61A384B384ed38c0983429dcDb49843F6"
       abi: DAOCommittee
+      startBlock: 9874600
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
