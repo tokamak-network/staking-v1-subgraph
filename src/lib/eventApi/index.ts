@@ -49,8 +49,7 @@ export class stakingV1Event<T> {
    * @function handleUser()
    * @function handleUserStake()
    */
-  _handleCommonEvents() {
-    handleLayer2(this._event);
+  _handleCommonEvents(): void {
     handleCandidate(getCandidate(this._event));
     handleUser(this._event);
     handleUserStake(this._event);

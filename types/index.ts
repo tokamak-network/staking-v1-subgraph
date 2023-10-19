@@ -1,9 +1,10 @@
-import {
-  Restaked as RestakedEvent,
-  Staked as StakedEvent,
-  Unstaked as UnstakedEvent,
-  Withdrawal as WithdrawalEvent,
-} from "@/candidate";
+import { 
+  Deposited as StakedEvent,
+  WithdrawalProcessed as WithdrawalEvent,
+  WithdrawalRequested as UnstakedEvent,
+  Deposited as RestakedEvent,
+ } from '../generated/DepositManager/DepositManager';
+
 
 export type Transactions =
   | StakedEvent

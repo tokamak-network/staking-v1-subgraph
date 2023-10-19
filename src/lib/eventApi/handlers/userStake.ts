@@ -1,21 +1,20 @@
-import { UserStaked } from "@/schema";
-import { loadTransaction } from "@/utils";
+import { UserStaked, Candidate } from '../../../../generated/schema';
 import { getCandidate } from "./candidate";
-import { ZERO_BI } from "@/constants";
-import { Transactions } from "@/types";
+import { ZERO_BI } from "../../../../constants";
+import { Transactions } from "../../../../types";
 
-export function handleUserStake(event: Transactions) {
-  const userId = event.params.sender.toString();
+export function handleUserStake(event: Transactions): void {
+  const userId = event.params.depositor.toString();
   const stakeId = userId
     .concat("-")
-    .concat(event.params.candidateIndex.toString());
+    .concat(event.params.layer2.toString());
   let userStaked = UserStaked.load(stakeId);
-  const { id: candidateId } = getCandidate(event);
+  const candidate = getCandidate(event);
   if (userStaked === null) {
     userStaked = new UserStaked(stakeId);
     userStaked.id = stakeId;
     userStaked.user = userId;
-    userStaked.candidateIndex = candidateId;
+    userStaked.candidateContract = candidate.id;
     userStaked.stakedAmount = ZERO_BI;
     userStaked.pendingWithdrawalAmount = ZERO_BI;
   }
@@ -24,7 +23,7 @@ export function handleUserStake(event: Transactions) {
   return userStaked.save();
 }
 
-export function test(event: Transactions) {
-  switch (event) {
-  }
-}
+// export function test(event: Transactions) {
+//   switch (event) {
+//   }
+// }

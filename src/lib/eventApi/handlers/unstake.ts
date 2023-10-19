@@ -1,11 +1,10 @@
-import { Staked, Unstaked } from "@/schema";
-import { loadTransaction } from "@/utils";
+import { Staked, Unstaked } from "../../../../generated/schema";
+import { loadTransaction } from "../../../../utils";
 import { getCandidate } from "./candidate";
-import { Transactions } from "@/types";
-import { Unstaked as UnstakedEvent } from "@/candidate";
+import { WithdrawalRequested as UnstakedEvent } from "../../../../generated/DepositManger/DepositManger";
 
 //tx update
-export function handleUnstake(event: UnstakedEvent) {
+export function handleUnstake(event: UnstakedEvent): void {
   const candidate = getCandidate(event);
   const transaction = loadTransaction(event);
   const unstake = new Unstaked(

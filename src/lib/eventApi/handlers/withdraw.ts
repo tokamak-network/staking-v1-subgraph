@@ -1,5 +1,5 @@
-import { Staked } from "../../../../generated/schema";
-import { Process as StakedEvent } from "../../../../generated/DepositManger/DepositManger";
+import { Withdrawal } from "../../../../generated/schema";
+import { WithdrawalProcessed as WithdrawalEvent } from "../../../../generated/DepositManger/DepositManger";
 // import {
 //   Staked as StakedEvent,
 // } from "../../../../generated/candidate";
@@ -8,14 +8,14 @@ import { loadTransaction } from "../../../../utils";
 import { getCandidate } from "./candidate";
 
 //tx update
-export function handleWithdraw(event: WithdrawalEvent) {
+export function handleWithdraw(event: WithdrawalEvent): void {
   const transaction = loadTransaction(event);
-  const { txCount, id } = getCandidate(event);
-  const stake = new Staked(transaction.id + "#" + txCount.toString());
-  stake.transaction = transaction.id;
-  stake.timestamp = transaction.timestamp;
-  stake.candidate = id;
-  stake.amount = event.params.amount;
-
-  return stake.save();
+  const candidate = getCandidate(event);
+  const withdrawal = new Withdrawal(transaction.id + "#" + candidate.txCount.toString());
+  withdrawal.transaction = transaction.id;
+  withdrawal.timestamp = transaction.timestamp;
+  withdrawal.candidate = candidate.id;
+  withdrawal.amount = event.params.amount;
+  
+  return withdrawal.save();
 }

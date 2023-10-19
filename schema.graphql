@@ -18,7 +18,7 @@ type Candidate @entity {
 	# staked amount of this candidate
 	stakedAmount: BigInt!
   pendingWithdrawalAmount: BigInt!
-  #txCount: BigInt!
+  txCount: BigInt!
   commissionRate: BigDecimal!
   # user info who are staking to this candidate
 	user: [User!]
@@ -50,7 +50,7 @@ type UserStaked @entity {
   # user address
   user: User!
   # index of candidate
-  candidateAddress: Candidate!
+  candidateContract: Candidate!
   stakedAmount: BigInt!
   pendingWithdrawalAmount: BigInt!
 }

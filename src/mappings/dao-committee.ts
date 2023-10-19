@@ -19,6 +19,7 @@ export function handleCandidateContractCreated (event: CandidateContractCreated)
   candidate.id = event.params.candidateContract
   candidate.candidate = event.params.candidate
   candidate.candidateContract = event.params.candidateContract
+  candidate.txCount = ZERO_BI
   candidate.name = event.params.memo.toString()
   candidate.commissionRate = ZERO_BD
   
