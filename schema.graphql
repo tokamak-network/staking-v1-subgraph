@@ -1,10 +1,20 @@
+type Factory @entity {
+  id: ID!
+  totalStaked: BigInt!
+  totalPendingWithdrawal: BigInt!
+  numOfCandidate: BigInt!
+}
+
 type Candidate @entity {
   # candidate index
   id: ID!
-  # candidate name
-  name: String!
-	# owner of sequencer
+  candidate: Bytes! # address
+  candidateContract: Bytes! # address
+  name: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
 	owner: Bytes!
+  coinage: Bytes!
 	# staked amount of this candidate
 	stakedAmount: BigInt!
   pendingWithdrawalAmount: BigInt!

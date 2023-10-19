@@ -1,7 +1,6 @@
 import { 
   Candidate,  
   User, 
-  Layer2, 
   UserStaked, 
   Staked, 
   Restaked,
@@ -10,11 +9,11 @@ import {
 } from '../../generated/schema'
 import { LAYER2_ADDRESS, ONE_BI, ZERO_BI } from '../../utils/constants';
 import {
-  Restaked as RestakedEvent,
-  Staked as StakedEvent,
-  Unstaked as UnstakedEvent,
-  Withdrawal as WithdrawalEvent
-} from "../../generated/Candidate/Candidate"
+  Deposited as RestakedEvent,
+  Deposited as StakedEvent,
+  WithdrawalRequested as UnstakedEvent,
+  WithdrawalProcessed as WithdrawalEvent
+} from "../../generated/DepositManger/DepositManger"
 import { loadTransaction } from '../../utils';
 
 export function handleStaked (event: StakedEvent): void {
@@ -47,7 +46,6 @@ export function handleStaked (event: StakedEvent): void {
     user = new User(event.params.sender.toString())
     user.id = event.params.sender.toString()
     user.totalStaked = ZERO_BI
-    user.userLton = ZERO_BI
     user.pendingWithdrawalAmount = ZERO_BI
   }
   user.totalStaked = user.totalStaked.plus(event.params.amount)
