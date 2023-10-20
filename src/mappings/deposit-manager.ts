@@ -31,7 +31,12 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
 
 export function handleStaked(event: StakedEvent): void {
   let factory = Factory.load('1');
-  if (factory == null) factory = new Factory('1')
+  if (factory == null) {
+    factory = new Factory('1')
+    factory.totalStaked = ZERO_BI
+    factory.totalPendingWithdrawal = ZERO_BI
+    factory.numOfCandidate = ZERO_BI
+  } 
   factory.totalStaked = factory.totalStaked.plus(event.params.amount)
 
   const transaction = loadTransaction(event);
@@ -57,6 +62,7 @@ export function handleStaked(event: StakedEvent): void {
     user.totalEarnedSeig = ZERO_BI
   }
   user.totalStaked = user.totalStaked.plus(event.params.amount);
+  user.candidate = event.params.layer2
 
   staked.user = user.id
 
@@ -70,7 +76,7 @@ export function handleStaked(event: StakedEvent): void {
     userStaked = new UserStaked(stakeId);
     userStaked.id = stakeId;
     userStaked.user = userId;
-    userStaked.candidateContract = candidate.id;
+    userStaked.candidate = candidate.id;
     userStaked.stakedAmount = ZERO_BI;
     userStaked.pendingWithdrawalAmount = ZERO_BI;
   }

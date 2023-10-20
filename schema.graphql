@@ -21,7 +21,7 @@ type Candidate @entity {
   txCount: BigInt!
   commissionRate: BigDecimal!
   # user info who are staking to this candidate
-	user: [User!]
+	# user: [User!]
   # derived values
   staked: [Staked]! @derivedFrom(field: "candidate")
   unstaked: [Unstaked]! @derivedFrom(field: "candidate")
@@ -36,8 +36,9 @@ type User @entity {
 	totalStaked: BigInt!
   pendingWithdrawalAmount: BigInt!
 	# amount of TON from seigniorage 
+  candidate: Candidate!
 	totalEarnedSeig: BigInt!
-  userStaked: [UserStaked!]
+  #userStaked: [UserStaked!]
 	# derived values
   staked: [Staked]! @derivedFrom(field: "user")
   unstaked: [Unstaked]! @derivedFrom(field: "user")
@@ -50,7 +51,7 @@ type UserStaked @entity {
   # user address
   user: User!
   # index of candidate
-  candidateContract: Candidate!
+  candidate: Candidate!
   stakedAmount: BigInt!
   pendingWithdrawalAmount: BigInt!
 }
