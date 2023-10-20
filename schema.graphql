@@ -7,42 +7,43 @@ type Factory @entity {
 
 type Candidate @entity {
   # candidate index
-  id: ID!
-  candidate: Bytes! # address
+  id: Bytes!
+  candidate: Bytes!
   candidateContract: Bytes! # address
   name: String! # string
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-	owner: Bytes!
-  coinage: Bytes!
-	# staked amount of this candidate
-	stakedAmount: BigInt!
+  #blockNumber: BigInt!
+  #blockTimestamp: BigInt!
+  #owner: Bytes!
+  #coinage: Bytes!
+  # staked amount of this candidate
+  stakedAmount: BigInt!
   pendingWithdrawalAmount: BigInt!
   txCount: BigInt!
   commissionRate: BigDecimal!
   # user info who are staking to this candidate
-	user: [User!]!
+  # user: [User!]
   # derived values
   staked: [Staked]! @derivedFrom(field: "candidate")
   unstaked: [Unstaked]! @derivedFrom(field: "candidate")
   restaked: [Restaked]! @derivedFrom(field: "candidate")
-	withdrawal: [Withdrawal]! @derivedFrom(field: "candidate")
+  withdrawal: [Withdrawal]! @derivedFrom(field: "candidate")
 }
 
 type User @entity {
-	# user address
+  # user address
   id: ID!
-	# deposited amount of this user
-	totalStaked: BigInt!
+  # deposited amount of this user
+  totalStaked: BigInt!
   pendingWithdrawalAmount: BigInt!
-	# amount of TON from seigniorage 
-	totalEarnedSeig: BigInt!
-  userStaked: [UserStaked!]!
-	# derived values
+  # amount of TON from seigniorage
+  candidate: Candidate!
+  totalEarnedSeig: BigInt!
+  #userStaked: [UserStaked!]
+  # derived values
   staked: [Staked]! @derivedFrom(field: "user")
   unstaked: [Unstaked]! @derivedFrom(field: "user")
   restaked: [Restaked]! @derivedFrom(field: "user")
-	withdrawal: [Withdrawal]! @derivedFrom(field: "user")
+  withdrawal: [Withdrawal]! @derivedFrom(field: "user")
 }
 
 type UserStaked @entity {
@@ -50,7 +51,7 @@ type UserStaked @entity {
   # user address
   user: User!
   # index of candidate
-  candidateAddress: Candidate!
+  candidate: Candidate!
   stakedAmount: BigInt!
   pendingWithdrawalAmount: BigInt!
 }
@@ -63,34 +64,31 @@ type Transaction @entity {
   # timestamp txn was confirmed
   timestamp: BigInt!
   # gas used during txn execution
-  gasUsed: BigInt!
+  gasUsed: BigInt
   gasPrice: BigInt!
   # derived values
   staked: [Staked]! @derivedFrom(field: "transaction")
   unstaked: [Unstaked]! @derivedFrom(field: "transaction")
   restaked: [Restaked]! @derivedFrom(field: "transaction")
-	withdrawal: [Withdrawal]! @derivedFrom(field: "transaction")
+  withdrawal: [Withdrawal]! @derivedFrom(field: "transaction")
 }
 
 type Staked @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
-  
+
   candidate: Candidate!
   user: User!
   sender: Bytes! # address
   amount: BigInt! # uint256
-  lton: BigInt! # uint256
-  commissionTo: Bytes! # address
-  commission: Int! # uint16
 }
 
 type Unstaked @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
-  
+
   candidate: Candidate!
   user: User!
   sender: Bytes! # address
@@ -102,7 +100,7 @@ type Restaked @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
-  
+
   candidate: Candidate!
   user: User!
   sender: Bytes! # address
@@ -114,7 +112,7 @@ type Withdrawal @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
-  
+
   candidate: Candidate!
   user: User!
   sender: Bytes! # address
@@ -138,7 +136,6 @@ type CommissionRateSet @entity(immutable: true) {
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
-
 
 type OnSnapshot @entity(immutable: true) {
   id: Bytes!
@@ -171,7 +168,6 @@ type UpdatedSeigniorage @entity(immutable: true) {
   oldCoinageFactor: BigInt! # uint256
   nextTotFactor: BigInt! # uint256
   nextCoinageFactor: BigInt! # uint256
-  blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }

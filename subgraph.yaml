@@ -8,6 +8,7 @@ dataSources:
     source:
       address: "0x8829Cb37CbbF32404B372113F9Fc3F6cd965c474"
       abi: SeigManager
+      startBlock: 9874600
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -36,29 +37,76 @@ dataSources:
         # - event: UpdatedSeigniorage(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
         #   handler: handleUpdatedSeigniorage
       file: ./src/mappings/seig-manager.ts
-  # - kind: ethereum
-  #   name: DepositManager
-  #   network: goerli
-  #   source:
-  #     address: "0xA0458d8af8a25A18959b9cB607c33Bc4973f7849"
-  #     abi: DepositManager
-  #   mapping:
-  #     kind: ethereum/events
-  #     apiVersion: 0.0.7
-  #     language: wasm/assemblyscript
-  #     entities:
-  #       - Deposited
-  #       - RoleAdminChanged
-  #       - WithdrawalProcessed
-  #       - WithdrawalRequested
-  #     abis:
-  #       - name: DepositManager
-  #         file: ./abis/DepositManager.json
-  #     eventHandlers:
-  #       - event: Deposited(indexed address,address,uint256)
-  #         handler: handleStaked
-  #       - event: WithdrawalProcessed(indexed address,address,uint256)
-  #         handler: handleWithdrawal
-  #       - event: WithdrawalRequested(indexed address,address,uint256)
-  #         handler: handleUnstaked
-  #     file: ./src/mappings/deposit-manager.ts
+  - kind: ethereum
+    name: DepositManager
+    network: goerli
+    source:
+      address: "0xA0458d8af8a25A18959b9cB607c33Bc4973f7849"
+      abi: DepositManager
+      startBlock: 9874600
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Deposited
+        - WithdrawalProcessed
+        - WithdrawalRequested
+      abis:
+        - name: DepositManager
+          file: ./abis/DepositManager.json
+      eventHandlers:
+        - event: Deposited(indexed address,address,uint256)
+          handler: handleStaked
+        - event: WithdrawalProcessed(indexed address,address,uint256)
+          handler: handleWithdrawal
+        - event: WithdrawalRequested(indexed address,address,uint256)
+          handler: handleUnstaked
+      file: ./src/mappings/deposit-manager.ts
+  - kind: ethereum
+    name: DAOCommittee
+    network: goerli
+    source:
+      address: "0x3C5ffEe61A384B384ed38c0983429dcDb49843F6"
+      abi: DAOCommittee
+      startBlock: 9874600
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        # - ActivityRewardChanged
+        # - AgendaCreated
+        # - AgendaExecuted
+        # - AgendaVoteCasted
+        - CandidateContractCreated
+        # - ChangedMember
+        # - ChangedMemo
+        # - ChangedSlotMaximum
+        # - ClaimedActivityReward
+        # - Layer2Registered
+      abis:
+        - name: DAOCommittee
+          file: ./abis/DAOCommittee.json
+      eventHandlers:
+        # - event: ActivityRewardChanged(uint256)
+        #   handler: handleActivityRewardChanged
+        # - event: AgendaCreated(indexed address,indexed uint256,address[],uint128,uint128,bool)
+        #   handler: handleAgendaCreated
+        # - event: AgendaExecuted(indexed uint256,address[])
+        #   handler: handleAgendaExecuted
+        # - event: AgendaVoteCasted(indexed address,indexed uint256,uint256,string)
+        #   handler: handleAgendaVoteCasted
+        - event: CandidateContractCreated(indexed address,indexed address,string)
+          handler: handleCandidateContractCreated
+        # - event: ChangedMember(indexed uint256,address,indexed address)
+        #   handler: handleChangedMember
+        # - event: ChangedMemo(address,string)
+        #   handler: handleChangedMemo
+        # - event: ChangedSlotMaximum(indexed uint256,indexed uint256)
+        #   handler: handleChangedSlotMaximum
+        # - event: ClaimedActivityReward(indexed address,address,uint256)
+        #   handler: handleClaimedActivityReward
+        # - event: Layer2Registered(indexed address,indexed address,string)
+        #   handler: handleLayer2Registered
+      file: ./src/mappings/dao-committee.ts
