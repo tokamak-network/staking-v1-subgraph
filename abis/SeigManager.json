@@ -3,6 +3,43 @@
     "anonymous": false,
     "inputs": [
       {
+        "indexed": false,
+        "internalType": "address",
+        "name": "layer2",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "seigs",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "operatorSeigs",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "nextTotalSupply",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "prevTotalSupply",
+        "type": "uint256"
+      }
+    ],
+    "name": "AddedSeigAtLayer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
         "indexed": true,
         "internalType": "address",
         "name": "layer2",
@@ -54,37 +91,6 @@
       }
     ],
     "name": "CommissionRateSet",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "totalStakedAmount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "totalSupplyOfWTON",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "prevTotalSupply",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "nextTotalSupply",
-        "type": "uint256"
-      }
-    ],
-    "name": "CommitLog1",
     "type": "event"
   },
   {
@@ -224,11 +230,56 @@
       {
         "indexed": false,
         "internalType": "uint256",
+        "name": "daoSeig",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
         "name": "pseig",
         "type": "uint256"
       }
     ],
     "name": "SeigGiven",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "daoSeigRate",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetDaoSeigRate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "powerTONSeigRate",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetPowerTONSeigRate",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "pseigRate",
+        "type": "uint256"
+      }
+    ],
+    "name": "SetPseigRate",
     "type": "event"
   },
   {
@@ -261,61 +312,6 @@
       }
     ],
     "name": "UnstakeLog",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "layer2",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "blockNumber",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "prevTotal",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "nextTotal",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "oldTotFactor",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "oldCoinageFactor",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "nextTotFactor",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "nextCoinageFactor",
-        "type": "uint256"
-      }
-    ],
-    "name": "UpdatedSeigniorage",
     "type": "event"
   },
   {
@@ -1088,6 +1084,19 @@
   },
   {
     "inputs": [
+      { "internalType": "address", "name": "account", "type": "address" },
+      { "internalType": "uint256", "name": "snapshotId", "type": "uint256" }
+    ],
+    "name": "stakeOfAt",
+    "outputs": [
+      { "internalType": "uint256", "name": "amount", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "layer2", "type": "address" },
       { "internalType": "address", "name": "account", "type": "address" },
       { "internalType": "uint256", "name": "snapshotId", "type": "uint256" }
     ],

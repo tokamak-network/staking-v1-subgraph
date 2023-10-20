@@ -6,7 +6,7 @@ dataSources:
     name: SeigManager
     network: goerli
     source:
-      address: "0x8829Cb37CbbF32404B372113F9Fc3F6cd965c474"
+      address: "0x50255c955d0F760C8512ff556453AEe6502ef47f"
       abi: SeigManager
       startBlock: 9874600
     mapping:
@@ -15,6 +15,7 @@ dataSources:
       language: wasm/assemblyscript
       entities:
         - CoinageCreated
+        - AddedSeigAtLayer
         # - Comitted
         # - CommissionRateSet
         # - OnSnapshot
@@ -27,6 +28,8 @@ dataSources:
       eventHandlers:
         - event: CoinageCreated(indexed address,address)
           handler: handleCoinageCreated
+        - event: AddedSeigAtLayer(address,uint256,uint256,uint256,uint256)
+          handler: handleAddedSeigAtLayer
         # - event: Comitted(indexed address)
         #   handler: handleComitted
         # - event: CommissionRateSet(indexed address,uint256,uint256)
@@ -41,7 +44,7 @@ dataSources:
     name: DepositManager
     network: goerli
     source:
-      address: "0xA0458d8af8a25A18959b9cB607c33Bc4973f7849"
+      address: "0x0e1EF78939F9d3340e63A7a1077d50999CC6B64f"
       abi: DepositManager
       startBlock: 9874600
     mapping:
