@@ -1,5 +1,4 @@
 import { getCandidate, handleCandidate } from "./handlers/candidate";
-import { handleLayer2 } from "./handlers/layer2";
 import { handleUser } from "./handlers/user";
 import { handleUserStake } from "./handlers/userStake";
 import { handleStake } from "./handlers/stake";
@@ -50,8 +49,7 @@ export class stakingV1Event<T> {
    * @function handleUser()
    * @function handleUserStake()
    */
-  _handleCommonEvents() {
-    handleLayer2(this._event);
+  _handleCommonEvents(): void {
     handleCandidate(getCandidate(this._event));
     handleUser(this._event);
     handleUserStake(this._event);

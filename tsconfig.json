@@ -10,6 +10,7 @@
       "@/constants": ["./constants"],
       "@/utils": ["./utils"],
       "@/types": ["./types"]
-    }
+    },
+    "moduleResolution": "Node" // or "Classic"
   }
 }
