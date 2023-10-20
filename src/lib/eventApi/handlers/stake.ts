@@ -9,9 +9,9 @@ import {
 } from "../../../../generated/schema";
 import { Deposited as StakedEvent } from "../../../../generated/DepositManger/DepositManger";
 import { loadTransaction } from "../../../../utils";
-import { getCandidate } from "./candidate";
-import { handleUser } from './user';
-import { handleUserStake } from './userStake';
+// import { getCandidate } from "./candidate";
+// import { handleUser } from './user';
+// import { handleUserStake } from './userStake';
 
 //tx update
 export function handleStake(event: StakedEvent): void {

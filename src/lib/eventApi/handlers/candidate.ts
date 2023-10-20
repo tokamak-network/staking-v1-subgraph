@@ -1,14 +1,14 @@
-import { Candidate } from "../../../../generated/schema";
-import { Transactions } from "../../../../types";
+// import { Candidate } from "../../../../generated/schema";
+// import { Transactions } from "../../../../types";
 
-export function getCandidate(event: Transactions): Candidate {
-  const candidate = Candidate.load(event.params.layer2);
+// export function getCandidate(event: Transactions): Candidate {
+//   const candidate = Candidate.load(event.params.layer2);
 
-  if (candidate !== null) return candidate;
+//   if (candidate !== null) return candidate;
 
-  return new Candidate(event.params.layer2);
-}
+//   return new Candidate(event.params.layer2);
+// }
 
-export function handleCandidate(candidate: Candidate): void {
-  return candidate.save();
-}
+// export function handleCandidate(candidate: Candidate): void {
+//   return candidate.save();
+// }

@@ -37,7 +37,7 @@ type User @entity {
   pendingWithdrawalAmount: BigInt!
 	# amount of TON from seigniorage 
 	totalEarnedSeig: BigInt!
-  userStaked: [UserStaked!]!
+  userStaked: [UserStaked!]
 	# derived values
   staked: [Staked]! @derivedFrom(field: "user")
   unstaked: [Unstaked]! @derivedFrom(field: "user")
@@ -63,7 +63,7 @@ type Transaction @entity {
   # timestamp txn was confirmed
   timestamp: BigInt!
   # gas used during txn execution
-  gasUsed: BigInt!
+  gasUsed: BigInt
   gasPrice: BigInt!
   # derived values
   staked: [Staked]! @derivedFrom(field: "transaction")
@@ -81,9 +81,6 @@ type Staked @entity(immutable: true) {
   user: User!
   sender: Bytes! # address
   amount: BigInt! # uint256
-  lton: BigInt! # uint256
-  commissionTo: Bytes! # address
-  commission: Int! # uint16
 }
 
 type Unstaked @entity(immutable: true) {
