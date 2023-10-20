@@ -23,7 +23,7 @@ export function handleCandidateContractCreated (event: CandidateContractCreated)
   candidate.name = event.params.memo.toString()
   candidate.commissionRate = ZERO_BD
   
-  // candidate.txCount = ZERO_BI
+  // candidate.txCount = ZERO_BIts
   candidate.stakedAmount = ZERO_BI
   candidate.pendingWithdrawalAmount = ZERO_BI
 
