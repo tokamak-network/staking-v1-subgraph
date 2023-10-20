@@ -1,7 +1,7 @@
-// import { Staked } from "../../../../generated/schema";
-// import { loadTransaction } from "../../../../utils";
+// import { Staked } from "@/generated/schema";
+// import { loadTransaction } from "@/utils";
 // import { getCandidate } from "./candidate";
-// import { Transactions } from "../../../../types";
+// import { Transactions } from "@/types";
 
 // //tx update
 // export function handleRestake(event: Transactions): void {

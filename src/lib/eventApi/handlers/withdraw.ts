@@ -1,10 +1,10 @@
-import { Withdrawal } from "../../../../generated/schema";
-import { WithdrawalProcessed as WithdrawalEvent } from "../../../../generated/DepositManger/DepositManger";
+import { Withdrawal } from "@/schema";
+import { WithdrawalProcessed as WithdrawalEvent } from "@/deposit-manager";
 // import {
 //   Staked as StakedEvent,
-// } from "../../../../generated/candidate";
+// } from "@/generated/candidate";
 // import { Staked}
-import { loadTransaction } from "../../../../utils";
+import { loadTransaction } from "@/utils";
 // import { getCandidate } from "./candidate";
 
 //tx update

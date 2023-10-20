@@ -41,8 +41,11 @@ export function handleStaked(event: StakedEvent): void {
 
   const transaction = loadTransaction(event);
   let candidate = Candidate.load(event.params.layer2);
-  if (candidate == null) candidate = new Candidate(event.params.layer2)
+  if (candidate == null) {
+    candidate = new Candidate(event.params.layer2)
+  } 
   candidate.stakedAmount = candidate.stakedAmount.plus(event.params.amount)
+
   const staked = new Staked(transaction.id + "#" + candidate.txCount.toString());
 
   staked.transaction = transaction.id;
@@ -82,6 +85,12 @@ export function handleStaked(event: StakedEvent): void {
   }
   userStaked.stakedAmount = userStaked.stakedAmount.plus(event.params.amount);
   // user.userStaked = stakeId
+
+  if (!candidate.stakedUserList.includes(stakeId)) {
+    let newList = candidate.stakedUserList
+    newList.push(stakeId)
+    candidate.stakedUserList = newList
+  }
 
   staked.save();
   user.save();

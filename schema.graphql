@@ -21,13 +21,15 @@ type Candidate @entity {
   txCount: BigInt!
   commissionRate: BigDecimal!
   # user info who are staking to this candidate
-	# user: [User!]
+	stakedUserList: [UserStaked!]!
   # derived values
   staked: [Staked]! @derivedFrom(field: "candidate")
   unstaked: [Unstaked]! @derivedFrom(field: "candidate")
   restaked: [Restaked]! @derivedFrom(field: "candidate")
 	withdrawal: [Withdrawal]! @derivedFrom(field: "candidate")
+  addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "candidate")
 }
+
 
 type User @entity {
 	# user address
@@ -71,6 +73,22 @@ type Transaction @entity {
   unstaked: [Unstaked]! @derivedFrom(field: "transaction")
   restaked: [Restaked]! @derivedFrom(field: "transaction")
 	withdrawal: [Withdrawal]! @derivedFrom(field: "transaction")
+  addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "transaction")
+}
+
+type AddedSeigAtLayer @entity(immutable: true) {
+  id: ID!
+  candidate: Candidate!
+  transaction: Transaction!
+
+  layer2: Bytes! # address
+  seigs: BigInt! # uint256
+  operatorSeigs: BigInt! # uint256
+  #nextTotalSupply: BigInt! # uint256
+  #prevTotalSupply: BigInt! # uint256
+  #blockNumber: BigInt!
+  #blockTimestamp: BigInt!
+  #transactionHash: Bytes!
 }
 
 type Staked @entity(immutable: true) {

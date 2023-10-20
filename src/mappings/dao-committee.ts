@@ -22,6 +22,7 @@ export function handleCandidateContractCreated (event: CandidateContractCreated)
   candidate.txCount = ZERO_BI
   candidate.name = event.params.memo.toString()
   candidate.commissionRate = ZERO_BD
+  candidate.stakedUserList = []
   
   // candidate.txCount = ZERO_BIts
   candidate.stakedAmount = ZERO_BI

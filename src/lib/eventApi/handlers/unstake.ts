@@ -1,7 +1,6 @@
-import { Staked, Unstaked } from "../../../../generated/schema";
-import { loadTransaction } from "../../../../utils";
+import { loadTransaction } from "@/utils";
 // import { getCandidate } from "./candidate";
-import { WithdrawalRequested as UnstakedEvent } from "../../../../generated/DepositManger/DepositManger";
+import { WithdrawalRequested as UnstakedEvent } from "@/deposit-manager";
 
 //tx update
 export function handleUnstake(event: UnstakedEvent): void {
