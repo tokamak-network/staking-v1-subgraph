@@ -6,7 +6,7 @@ import {
 } from "../../generated/DepositManger/DepositManger";
 import { loadTransaction } from "../../utils";
 // import { stakingV1Event } from "../lib/eventApi";
-import { Candidate, Staked, User, UserStaked, Factory } from '../../generated/schema';
+import { Candidate, Staked, User, UserStaked, Factory, Unstaked } from '../../generated/schema';
 import { ZERO_BI } from "../../constants";
 
 // export function handleStaked(event: StakedEvent): void {
@@ -116,15 +116,15 @@ export function handleUnstaked(event: UnstakedEvent): void {
   } 
   candidate.stakedAmount = candidate.stakedAmount.minus(event.params.amount)
 
-  const staked = new Staked(transaction.id + "#" + candidate.txCount.toString());
+  const unstaked = new Unstaked(transaction.id + "#" + candidate.txCount.toString());
 
-  staked.transaction = transaction.id;
-  staked.timestamp = transaction.timestamp;
-  staked.candidate = candidate.id;
-  staked.sender = event.params.depositor
-  staked.eventName = 'Stake'
+  unstaked.transaction = transaction.id;
+  unstaked.timestamp = transaction.timestamp;
+  unstaked.candidate = candidate.id;
+  unstaked.sender = event.params.depositor
+  unstaked.eventName = 'Unstake'
   
-  staked.amount = event.params.amount;
+  unstaked.amount = event.params.amount;
 
   let user = User.load(event.params.depositor.toHexString());
 
@@ -138,7 +138,7 @@ export function handleUnstaked(event: UnstakedEvent): void {
   user.totalStaked = user.totalStaked.minus(event.params.amount);
   user.candidate = event.params.layer2
 
-  staked.user = user.id
+  unstaked.user = user.id
 
   const userId = event.params.depositor.toHexString();
   const stakeId = userId
@@ -163,7 +163,7 @@ export function handleUnstaked(event: UnstakedEvent): void {
     candidate.stakedUserList = newList
   }
 
-  staked.save();
+  unstaked.save();
   user.save();
   userStaked.save();
   candidate.save();
