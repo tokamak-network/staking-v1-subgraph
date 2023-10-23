@@ -80,7 +80,7 @@ type AddedSeigAtLayer @entity(immutable: true) {
   id: ID!
   candidate: Candidate!
   transaction: Transaction!
-
+  timestamp: BigInt!
   layer2: Bytes! # address
   seigs: BigInt! # uint256
   operatorSeigs: BigInt! # uint256

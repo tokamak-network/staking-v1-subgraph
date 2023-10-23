@@ -11,8 +11,9 @@ import {
   CoinageCreated as CandidateEvent,
   AddedSeigAtLayer as AddedSeigEvent
 } from "../../generated/SeigManager/SeigManager"
-import { ZERO_BI } from "../../constants";
+import { ZERO_BI, BI_27 } from "../../constants";
 import { loadTransaction } from '../../utils';
+
 // import { loadTransaction } from '../../utils';
 
 export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
@@ -31,20 +32,21 @@ export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
   const numOfStaker = candidate.stakedUserList.length
   const transaction = loadTransaction(event);
 
-  for (let i=0; i < numOfStaker; i++) {
+  for (let i = 0; i < numOfStaker; i++) {
     const stakedUserId = candidate.stakedUserList[i]
     let stakedUser = UserStaked.load(stakedUserId)
     if (stakedUser === null) stakedUser = new UserStaked(stakedUserId)
     
     const stakedAmount = stakedUser.stakedAmount
-    const seigPerUser = stakedAmount.div(event.params.seigs)
-    stakedAmount.plus(seigPerUser)
+    const stakeRate = stakedAmount.times(BI_27).div(candidate.stakedAmount)
+    const seigPerUser = stakeRate.times(event.params.seigs).div(BI_27)
+    stakedUser.stakedAmount = stakedUser.stakedAmount.plus(seigPerUser)
     const userId = stakedUser.user
 
     let user = User.load(userId)
     if (user === null) user = new User(userId)
-    user.totalStaked.plus(seigPerUser)
-    user.totalEarnedSeig.plus(seigPerUser)
+    user.totalStaked= user.totalStaked.plus(seigPerUser)
+    user.totalEarnedSeig = user.totalEarnedSeig.plus(seigPerUser)
 
     stakedUser.save()
     user.save()
@@ -55,8 +57,10 @@ export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
   addedSeig.layer2 = event.params.layer2
   addedSeig.seigs = event.params.seigs
   addedSeig.operatorSeigs = event.params.operatorSeigs
+  addedSeig.transaction = transaction.id
+  addedSeig.timestamp = transaction.timestamp;
 
-  candidate.stakedAmount.plus(event.params.seigs)
+  candidate.stakedAmount = candidate.stakedAmount.plus(event.params.seigs)
 
   candidate.save()
   addedSeig.save()
