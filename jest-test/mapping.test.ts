@@ -4,8 +4,11 @@ import DepositManagerABI from "../abis/DepositManager.json";
 import TonABI from "../abis/TON.json";
 import WtonABI from "../abis/WTON.json";
 import { padLeft } from "web3-utils";
-import dotenv from "dotenv";
 import { marshalString, roundDown, unmarshalString } from "./utils";
+import axios from "axios";
+
+//env setup
+import dotenv from "dotenv";
 dotenv.config({ path: "./.env.dev" });
 
 const account = {
@@ -80,9 +83,12 @@ describe("staking-v1-subgraph test starting--", () => {
     //   expect(beforeSenderBalance).to.be.gte(wtonAmount);
 
     //staking compare
-    const stakingAmount = await SeigManager_Contract[
+    const beforeStakingAmount = await SeigManager_Contract[
       "stakeOf(address,address)"
     ]("0x2e8400ec60349a18dd84de0566881379056a3085", account.from);
+    const beforeStakingQuery = await axios.post("http://your-graphql-api-url", {
+      query,
+    });
     // const beforeTonBalance = await TON_CONTRACT.balanceOf(account.from);
 
     // await execAllowance(
@@ -91,8 +97,6 @@ describe("staking-v1-subgraph test starting--", () => {
     //   contracts.DepositManager,
     //   wtonAmount2
     // );
-
-    console.log("beforeStakingAmount", stakingAmount.toString());
 
     const tonAmount = ethers.utils.parseEther("1");
 
@@ -120,7 +124,9 @@ describe("staking-v1-subgraph test starting--", () => {
 
     expect(roundDown(afterStakingAmount.add(ethers.constants.Two), 1)).toEqual(
       roundDown(
-        stakingAmount.add(tonAmount.mul(ethers.BigNumber.from("1000000000"))),
+        beforeStakingAmount.add(
+          tonAmount.mul(ethers.BigNumber.from("1000000000"))
+        ),
         1
       )
     );
