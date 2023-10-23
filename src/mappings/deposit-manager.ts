@@ -52,6 +52,7 @@ export function handleStaked(event: StakedEvent): void {
   staked.timestamp = transaction.timestamp;
   staked.candidate = candidate.id;
   staked.sender = event.params.depositor
+  staked.eventName = 'Stake'
   
   staked.amount = event.params.amount;
 

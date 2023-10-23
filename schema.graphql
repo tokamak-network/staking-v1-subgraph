@@ -95,7 +95,7 @@ type Staked @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
-  
+  eventName: String!
   candidate: Candidate!
   user: User!
   sender: Bytes! # address
@@ -106,31 +106,29 @@ type Unstaked @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
-  
+  eventName: String!
   candidate: Candidate!
   user: User!
   sender: Bytes! # address
   amount: BigInt! # uint256
-  lton: BigInt! # uint256
 }
 
 type Restaked @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
-  
+  eventName: String!
   candidate: Candidate!
   user: User!
   sender: Bytes! # address
   amount: BigInt! # uint256
-  lton: BigInt! # uint256
 }
 
 type Withdrawal @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
-  
+  eventName: String!
   candidate: Candidate!
   user: User!
   sender: Bytes! # address
