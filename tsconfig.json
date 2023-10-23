@@ -1,7 +1,8 @@
 {
-  "extends": "@graphprotocol/graph-ts/types/tsconfig.base.json",
-  "include": ["src", "types"],
+  // "extends": "@graphprotocol/graph-ts/types/tsconfig.base.json",
+  // "include": ["src", "types", "jest-test"],
   "compilerOptions": {
+    "target": "ES6",
     "baseUrl": "./",
     "paths": {
       "@/generated": ["./generated"],
@@ -11,6 +12,14 @@
       "@/utils": ["./utils"],
       "@/types": ["./types"]
     },
-    "moduleResolution": "Node" // or "Classic"
-  }
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true
+  },
+  //for testing files with Jest
+  "transform": {
+    "^.+\\.tsx?$": "ts-jest"
+  },
+  "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$",
+  "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"]
 }

@@ -7,7 +7,6 @@ import {
   afterAll,
 } from "matchstick-as/assembly/index";
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts";
-import { CoinageCreated } from "../generated/schema";
 import { CoinageCreated as CoinageCreatedEvent } from "../generated/SeigManager/SeigManager";
 import { handleCoinageCreated } from "../src/seig-manager";
 import { createCoinageCreatedEvent } from "./seig-manager-utils";
