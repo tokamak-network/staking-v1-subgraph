@@ -3,8 +3,8 @@ import {
   Deposited as StakedEvent,
   WithdrawalRequested as UnstakedEvent,
   WithdrawalProcessed as WithdrawalEvent,
-} from "../../generated/DepositManger/DepositManger";
-import { stakingV1Event } from "src/lib/eventApi";
+} from "../../generated/DepositManager/DepositManager";
+import { stakingV1Event } from "../lib/eventApi/index";
 
 export function handleStaked(event: StakedEvent): void {
   const handler = new stakingV1Event(event);

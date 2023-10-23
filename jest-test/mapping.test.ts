@@ -4,7 +4,12 @@ import DepositManagerABI from "../abis/DepositManager.json";
 import TonABI from "../abis/TON.json";
 import WtonABI from "../abis/WTON.json";
 import { padLeft } from "web3-utils";
-import { marshalString, roundDown, unmarshalString } from "./utils";
+import {
+  getStakedQueryData,
+  marshalString,
+  roundDown,
+  unmarshalString,
+} from "./utils";
 import axios from "axios";
 
 //env setup
@@ -42,12 +47,15 @@ const DepositManager_Contract = new Contract(
 );
 const TON_CONTRACT = new Contract(contracts.TON, TonABI, provider);
 
-// unit tests for env file
-// describe("env", () => {
-//   it("should have a pk", () => {
-//     expect(process.env.PK).toBeDefined();
-//   });
-// });
+//test params
+const candidate = "0x2e8400ec60349a18dd84de0566881379056a3085";
+const query = `query {
+   userStakeds {
+    id
+    stakedAmount
+  }
+}`;
+const amount = "1";
 
 describe("staking-v1-subgraph test starting--", () => {
   const OLD_ENV = process.env;
@@ -72,9 +80,9 @@ describe("staking-v1-subgraph test starting--", () => {
   });
 
   test("**staking test**", async () => {
-    const wtonAmount = ethers.utils.parseEther("10" + "0".repeat(9));
-    const wtonAmount1 = ethers.utils.parseEther("7" + "0".repeat(9));
-    const wtonAmount2 = ethers.utils.parseEther("3" + "0".repeat(9));
+    // const wtonAmount = ethers.utils.parseEther("10" + "0".repeat(9));
+    // const wtonAmount1 = ethers.utils.parseEther("7" + "0".repeat(9));
+    // const wtonAmount2 = ethers.utils.parseEther("3" + "0".repeat(9));
 
     //compare balance
     //   const beforeSenderBalance = await WTON.balanceOf(
@@ -82,26 +90,34 @@ describe("staking-v1-subgraph test starting--", () => {
     //   );
     //   expect(beforeSenderBalance).to.be.gte(wtonAmount);
 
-    //staking compare
+    //staked amount compare
     const beforeStakingAmount = await SeigManager_Contract[
       "stakeOf(address,address)"
-    ]("0x2e8400ec60349a18dd84de0566881379056a3085", account.from);
-    const beforeStakingQuery = await axios.post("http://your-graphql-api-url", {
-      query,
-    });
-    // const beforeTonBalance = await TON_CONTRACT.balanceOf(account.from);
+    ](candidate, account.from);
+    const beforeStakingQueryResponse = await axios.post(
+      "https://api.thegraph.com/subgraphs/name/cd4761/staking-v1-subgraph-goerli",
+      {
+        query,
+      }
+    );
 
-    // await execAllowance(
-    //   new Contract(contracts.WTON, WtonABI.abi, provider),
-    //   singer,
-    //   contracts.DepositManager,
-    //   wtonAmount2
-    // );
+    expect(beforeStakingQueryResponse.status).toBe(200);
 
-    const tonAmount = ethers.utils.parseEther("1");
+    const beforeStakingQueryResponseAmount = getStakedQueryData(
+      beforeStakingQueryResponse,
+      account.from
+    );
+
+    console.log("beforeStakingAmount", beforeStakingAmount.toString());
+    console.log(
+      "beforeStakingQueryResponseAmount",
+      beforeStakingQueryResponseAmount
+    );
+
+    const tonAmount = ethers.utils.parseEther(amount);
 
     const data = marshalString(
-      [contracts.DepositManager, "0x2e8400ec60349a18dd84de0566881379056a3085"]
+      [contracts.DepositManager, candidate]
         .map(unmarshalString)
         .map((str) => padLeft(str, 64))
         .join("")
@@ -118,10 +134,11 @@ describe("staking-v1-subgraph test starting--", () => {
 
     const afterStakingAmount = await SeigManager_Contract[
       "stakeOf(address,address)"
-    ]("0x2e8400ec60349a18dd84de0566881379056a3085", account.from);
+    ](candidate, account.from);
 
     console.log("afterStakingAmount", afterStakingAmount.toString());
 
+    //check at a contract side
     expect(roundDown(afterStakingAmount.add(ethers.constants.Two), 1)).toEqual(
       roundDown(
         beforeStakingAmount.add(
@@ -130,6 +147,108 @@ describe("staking-v1-subgraph test starting--", () => {
         1
       )
     );
+
+    const afterStakingQueryResponse = await axios.post(
+      "https://api.thegraph.com/subgraphs/name/cd4761/staking-v1-subgraph-goerli",
+      {
+        query,
+      }
+    );
+
+    expect(afterStakingQueryResponse.status).toBe(200);
+
+    const afterStakingQueryResponseAmount = getStakedQueryData(
+      afterStakingQueryResponse,
+      account.from
+    );
+
+    const beforeConverted = ethers.utils.formatUnits(
+      beforeStakingQueryResponseAmount,
+      27
+    );
+    const afterConverted = ethers.utils.formatUnits(
+      afterStakingQueryResponseAmount,
+      27
+    );
+
+    expect(Number(afterConverted)).toEqual(
+      Number(beforeConverted) + Number(amount)
+    );
+
+    return;
+  }, 30000);
+
+  test("**unstaking test**", async () => {
+    //staked amount compare
+    const beforeUnstakingAmount = await SeigManager_Contract[
+      "stakeOf(address,address)"
+    ](candidate, account.from);
+    const beforeUnstakingQueryResponse = await axios.post(
+      "https://api.thegraph.com/subgraphs/name/cd4761/staking-v1-subgraph-goerli",
+      {
+        query,
+      }
+    );
+
+    expect(beforeUnstakingQueryResponse.status).toBe(200);
+
+    const beforeUnstakingQueryResponseAmount = getStakedQueryData(
+      beforeUnstakingQueryResponse,
+      account.from
+    );
+
+    console.log("beforeStakingAmount", beforeUnstakingAmount.toString());
+    console.log(
+      "beforeStakingQueryResponseAmount",
+      beforeUnstakingQueryResponseAmount
+    );
+
+    const wtonAmount = ethers.utils.parseEther(amount + "0".repeat(9));
+
+    await (
+      await DepositManager_Contract.connect(signer)[
+        "requestWithdrawal(address,uint256)"
+      ](candidate, wtonAmount)
+    ).wait();
+
+    const afterStakingAmount = await SeigManager_Contract[
+      "stakeOf(address,address)"
+    ](candidate, account.from);
+
+    console.log("afterStakingAmount", afterStakingAmount.toString());
+
+    //check at a contract side
+    expect(
+      roundDown(beforeUnstakingAmount.sub(ethers.constants.Two), 1)
+    ).toEqual(roundDown(afterStakingAmount.add(wtonAmount), 1));
+
+    const afterStakingQueryResponse = await axios.post(
+      "https://api.thegraph.com/subgraphs/name/cd4761/staking-v1-subgraph-goerli",
+      {
+        query,
+      }
+    );
+
+    expect(afterStakingQueryResponse.status).toBe(200);
+
+    const afterUnstakingQueryResponseAmount = getStakedQueryData(
+      afterStakingQueryResponse,
+      account.from
+    );
+
+    const beforeConverted = ethers.utils.formatUnits(
+      beforeUnstakingQueryResponseAmount,
+      27
+    );
+    const afterConverted = ethers.utils.formatUnits(
+      afterUnstakingQueryResponseAmount,
+      27
+    );
+
+    expect(Number(afterConverted)).toEqual(
+      Number(beforeConverted) - Number(amount)
+    );
+
     return;
   }, 30000);
 });

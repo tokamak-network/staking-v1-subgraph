@@ -1,5 +1,5 @@
-import { Candidate } from "@/schema";
-import { Transactions } from "@/types";
+import { Candidate } from "../../../../generated/schema";
+import { Transactions } from "../../../../types";
 
 export function getCandidate(event: Transactions): Candidate {
   const candidate = Candidate.load(event.params.candidateIndex.toString());

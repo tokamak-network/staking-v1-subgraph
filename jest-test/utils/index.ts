@@ -24,3 +24,11 @@ export async function execAllowance(
     await contract.connect(fromSigner).approve(toAddress, amount);
   }
 }
+
+export function getStakedQueryData(response: any, account: string) {
+  const userDatas = response.data.data.userStakeds; //[[Object]]
+  const testAccountData = userDatas.filter(
+    (data: any) => data.id.split("-")[0] === account.toLocaleLowerCase()
+  );
+  return testAccountData[0].stakedAmount;
+}
