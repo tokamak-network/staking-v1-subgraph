@@ -3,6 +3,7 @@ import SeigManagerABI from "../abis/SeigManager.json";
 import DepositManagerABI from "../abis/DepositManager.json";
 import TonABI from "../abis/TON.json";
 import WtonABI from "../abis/WTON.json";
+import CandidateABI from "../abis/Candidate.json";
 import { padLeft } from "web3-utils";
 import {
   getStakedQueryData,
@@ -11,7 +12,6 @@ import {
   unmarshalString,
 } from "./utils";
 import axios from "axios";
-import { mine } from "@nomicfoundation/hardhat-network-helpers";
 
 //env setup
 import dotenv from "dotenv";
@@ -56,7 +56,9 @@ const query = `query {
     stakedAmount
   }
 }`;
-const amount = "1";
+const amount = "1000";
+
+const Candidate_CONTRACT = new Contract(candidate, CandidateABI.abi, provider);
 
 describe("staking-v1-subgraph test starting--", () => {
   const OLD_ENV = process.env;
@@ -137,8 +139,6 @@ describe("staking-v1-subgraph test starting--", () => {
       "stakeOf(address,address)"
     ](candidate, account.from);
 
-    console.log("afterStakingAmount", afterStakingAmount.toString());
-
     //check at a contract side
     expect(roundDown(afterStakingAmount.add(ethers.constants.Two), 1)).toEqual(
       roundDown(
@@ -163,6 +163,12 @@ describe("staking-v1-subgraph test starting--", () => {
       account.from
     );
 
+    console.log("afterStakingAmount", afterStakingAmount.toString());
+    console.log(
+      "afterStakingQueryResponseAmount",
+      afterStakingQueryResponseAmount
+    );
+
     const beforeConverted = ethers.utils.formatUnits(
       beforeStakingQueryResponseAmount,
       27
@@ -177,6 +183,10 @@ describe("staking-v1-subgraph test starting--", () => {
     );
 
     return;
+  }, 30000);
+
+  test("**update seigniorage", async () => {
+    await (await Candidate_CONTRACT.connect(signer).updateSeigniorage()).wait();
   }, 30000);
 
   test("**unstaking test**", async () => {
