@@ -6,8 +6,9 @@ import {
 } from "../../generated/DepositManger/DepositManger";
 import { loadTransaction } from "../../utils";
 // import { stakingV1Event } from "../lib/eventApi";
-import { Candidate, Staked, User, UserStaked, Factory, Unstaked } from '../../generated/schema';
+import { Candidate, Staked, User, UserStaked, Factory, Unstaked, Withdrawal } from '../../generated/schema';
 import { ZERO_BI } from "../../constants";
+import { handleWithdraw } from '../lib/eventApi/handlers/withdraw';
 
 // export function handleStaked(event: StakedEvent): void {
 //   const handler = new stakingV1Event(event);
@@ -24,10 +25,10 @@ export function handleRestaked(event: RestakedEvent): void {
   // return handler.handleEvent.restake();
 }
 
-export function handleWithdrawal(event: WithdrawalEvent): void {
+// export function handleWithdrawal(event: WithdrawalEvent): void {
   // const handler = new stakingV1Event(event);
   // return handler.handleEvent.withdraw();
-}
+// }
 
 export function handleStaked(event: StakedEvent): void {
   let factory = Factory.load('1');
@@ -115,6 +116,7 @@ export function handleUnstaked(event: UnstakedEvent): void {
     candidate = new Candidate(event.params.layer2)
   } 
   candidate.stakedAmount = candidate.stakedAmount.minus(event.params.amount)
+  candidate.pendingWithdrawalAmount = candidate.pendingWithdrawalAmount.plus(event.params.amount)
 
   const unstaked = new Unstaked(transaction.id + "#" + candidate.txCount.toString());
 
@@ -136,6 +138,7 @@ export function handleUnstaked(event: UnstakedEvent): void {
     user.totalEarnedSeig = ZERO_BI
   }
   user.totalStaked = user.totalStaked.minus(event.params.amount);
+  user.pendingWithdrawalAmount = user.pendingWithdrawalAmount.plus(event.params.amount);
   user.candidate = event.params.layer2
 
   unstaked.user = user.id
@@ -155,6 +158,7 @@ export function handleUnstaked(event: UnstakedEvent): void {
     userStaked.pendingWithdrawalAmount = ZERO_BI;
   }
   userStaked.stakedAmount = userStaked.stakedAmount.minus(event.params.amount);
+  userStaked.pendingWithdrawalAmount = userStaked.pendingWithdrawalAmount.plus(event.params.amount);
   // user.userStaked = stakeId
 
   if (!candidate.stakedUserList.includes(stakeId)) {
@@ -164,6 +168,76 @@ export function handleUnstaked(event: UnstakedEvent): void {
   }
 
   unstaked.save();
+  user.save();
+  userStaked.save();
+  candidate.save();
+}
+
+export function handleWithdrawal(event: WithdrawalEvent): void {
+  let factory = Factory.load('1');
+  if (factory == null) {
+    factory = new Factory('1')
+    factory.totalStaked = ZERO_BI
+    factory.totalPendingWithdrawal = ZERO_BI
+    factory.numOfCandidate = ZERO_BI
+  } 
+  // factory.totalStaked = factory.totalStaked.minus(event.params.amount)
+
+  const transaction = loadTransaction(event);
+  let candidate = Candidate.load(event.params.layer2);
+  if (candidate == null) {
+    candidate = new Candidate(event.params.layer2)
+  } 
+  candidate.pendingWithdrawalAmount = candidate.pendingWithdrawalAmount.minus(event.params.amount)
+
+  const withdrawal = new Withdrawal(transaction.id + "#" + candidate.txCount.toString());
+
+  withdrawal.transaction = transaction.id;
+  withdrawal.timestamp = transaction.timestamp;
+  withdrawal.candidate = candidate.id;
+  withdrawal.sender = event.params.depositor
+  withdrawal.eventName = 'Withdraw'
+  
+  withdrawal.amount = event.params.amount;
+
+  let user = User.load(event.params.depositor.toHexString());
+
+  if (user === null) {
+    user = new User(event.params.depositor.toHexString());
+    user.id = event.params.depositor.toHexString();
+    user.totalStaked = ZERO_BI;
+    user.pendingWithdrawalAmount = ZERO_BI;
+    user.totalEarnedSeig = ZERO_BI
+  }
+  user.pendingWithdrawalAmount = user.pendingWithdrawalAmount.minus(event.params.amount);
+  user.candidate = event.params.layer2
+
+  withdrawal.user = user.id
+
+  const userId = event.params.depositor.toHexString();
+  const stakeId = userId
+    .concat("-")
+    .concat(event.params.layer2.toHexString());
+
+  let userStaked = UserStaked.load(stakeId);
+  if (userStaked === null) {
+    userStaked = new UserStaked(stakeId);
+    userStaked.id = stakeId;
+    userStaked.user = userId;
+    userStaked.candidate = candidate.id;
+    userStaked.stakedAmount = ZERO_BI;
+    userStaked.pendingWithdrawalAmount = ZERO_BI;
+  }
+  userStaked.pendingWithdrawalAmount = userStaked.pendingWithdrawalAmount.minus(event.params.amount);
+  // user.userStaked = stakeId
+
+  if (!candidate.stakedUserList.includes(stakeId)) {
+    let newList = candidate.stakedUserList
+    newList.push(stakeId)
+    candidate.stakedUserList = newList
+  }
+
+  withdrawal.save();
   user.save();
   userStaked.save();
   candidate.save();
