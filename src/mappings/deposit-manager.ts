@@ -33,9 +33,9 @@ export function handleStaked(event: StakedEvent): void {
   let factory = Factory.load('1');
   if (factory == null) {
     factory = new Factory('1')
-    factory.totalStaked = ZERO_BI
-    factory.totalPendingWithdrawal = ZERO_BI
-    factory.numOfCandidate = ZERO_BI
+    // factory.totalStaked = ZERO_BI
+    // factory.totalPendingWithdrawal = ZERO_BI
+    // factory.numOfCandidate = ZERO_BI
   } 
   factory.totalStaked = factory.totalStaked.plus(event.params.amount)
 
