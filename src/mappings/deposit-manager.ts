@@ -8,7 +8,6 @@ import { loadTransaction } from "../../utils";
 // import { stakingV1Event } from "../lib/eventApi";
 import { Candidate, Staked, User, UserStaked, Factory, Unstaked, Withdrawal } from '../../generated/schema';
 import { ZERO_BI } from "../../constants";
-import { handleWithdraw } from '../lib/eventApi/handlers/withdraw';
 
 // export function handleStaked(event: StakedEvent): void {
 //   const handler = new stakingV1Event(event);
