@@ -6,10 +6,12 @@ export function loadTransaction(event: ethereum.Event): Transaction {
   let transaction = Transaction.load(event.transaction.hash.toHexString())
   if (transaction === null) {
     transaction = new Transaction(event.transaction.hash.toHexString())
+    transaction.numEvent = ZERO_BI
   }
   transaction.blockNumber = event.block.number
   transaction.timestamp = event.block.timestamp
   // transaction.gasUsed = event.transaction.gasUsed
+  transaction.numEvent = transaction.numEvent.plus(ONE_BI)
   transaction.gasPrice = event.transaction.gasPrice
   transaction.save()
   return transaction as Transaction

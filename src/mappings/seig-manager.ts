@@ -9,22 +9,29 @@ import { AddedSeigAtLayer, Candidate, Factory, User, UserStaked } from '../../ge
 import {
   // UpdatedSeigniorage as UpdatedSeigniorageEvent,
   CoinageCreated as CandidateEvent,
-  AddedSeigAtLayer as AddedSeigEvent
+  AddedSeigAtLayer as AddedSeigEvent,
+  CommissionRateSet as CommissionRateEvent,
 } from "../../generated/SeigManager/SeigManager"
 import { ZERO_BI, BI_27 } from "../../constants";
 import { loadTransaction } from '../../utils';
+import { updateDailyStakingData } from '../../utils/intervalUpdates';
 
 // import { loadTransaction } from '../../utils';
+
+export function handlerCommissionRateSet (event: CommissionRateEvent): void {
+  let candidate = Candidate.load(event.params.layer2)
+  if (candidate === null) candidate = new Candidate(event.params.layer2)
+  
+  candidate.commissionRate = event.params.newRate
+  candidate.save()
+}
 
 export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
   let factory = Factory.load('1');
   if (factory == null) {
     factory = new Factory('1')
-    factory.totalStaked = ZERO_BI
-    factory.totalPendingWithdrawal = ZERO_BI
-    factory.numOfCandidate = ZERO_BI
   } 
-  // factory.totalStaked = factory.totalStaked.plus(event.params.amount)
+  factory.totalStaked = factory.totalStaked.plus(event.params.seigs)
 
   // event.params.layer2
   let candidate = Candidate.load(event.params.layer2)
@@ -59,9 +66,16 @@ export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
   addedSeig.operatorSeigs = event.params.operatorSeigs
   addedSeig.transaction = transaction.id
   addedSeig.timestamp = transaction.timestamp;
+  addedSeig.prevTotalSupply = event.params.prevTotalSupply
+  addedSeig.nextTotalSupply = event.params.nextTotalSupply
 
   candidate.stakedAmount = candidate.stakedAmount.plus(event.params.seigs)
-
+  candidate.prevTotalSupply = event.params.prevTotalSupply
+  candidate.nextTotalSupply = event.params.nextTotalSupply
+  candidate.seigs = event.params.seigs
+  
+  factory.save()
+  updateDailyStakingData(event)
   candidate.save()
   addedSeig.save()
   transaction.save()

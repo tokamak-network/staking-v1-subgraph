@@ -8,6 +8,7 @@ import { loadTransaction } from "../../utils";
 // import { stakingV1Event } from "../lib/eventApi";
 import { Candidate, Staked, User, UserStaked, Factory, Unstaked, Withdrawal } from '../../generated/schema';
 import { ZERO_BI } from "../../constants";
+import { updateDailyStakingData } from '../../utils/intervalUpdates';
 
 // export function handleStaked(event: StakedEvent): void {
 //   const handler = new stakingV1Event(event);
@@ -31,12 +32,8 @@ export function handleRestaked(event: RestakedEvent): void {
 
 export function handleStaked(event: StakedEvent): void {
   let factory = Factory.load('1');
-  if (factory == null) {
-    factory = new Factory('1')
-    // factory.totalStaked = ZERO_BI
-    // factory.totalPendingWithdrawal = ZERO_BI
-    // factory.numOfCandidate = ZERO_BI
-  } 
+  if (factory == null) factory = new Factory('1')
+  
   factory.totalStaked = factory.totalStaked.plus(event.params.amount)
 
   const transaction = loadTransaction(event);
@@ -46,7 +43,7 @@ export function handleStaked(event: StakedEvent): void {
   } 
   candidate.stakedAmount = candidate.stakedAmount.plus(event.params.amount)
 
-  const staked = new Staked(transaction.id + "#" + candidate.txCount.toString());
+  const staked = new Staked(transaction.id + '#' + transaction.numEvent.toString());
 
   staked.transaction = transaction.id;
   staked.timestamp = transaction.timestamp;
@@ -92,6 +89,8 @@ export function handleStaked(event: StakedEvent): void {
     newList.push(stakeId)
     candidate.stakedUserList = newList
   }
+  factory.save()
+  updateDailyStakingData(event)
 
   staked.save();
   user.save();
@@ -103,9 +102,6 @@ export function handleUnstaked(event: UnstakedEvent): void {
   let factory = Factory.load('1');
   if (factory == null) {
     factory = new Factory('1')
-    factory.totalStaked = ZERO_BI
-    factory.totalPendingWithdrawal = ZERO_BI
-    factory.numOfCandidate = ZERO_BI
   } 
   factory.totalStaked = factory.totalStaked.minus(event.params.amount)
 
@@ -117,7 +113,7 @@ export function handleUnstaked(event: UnstakedEvent): void {
   candidate.stakedAmount = candidate.stakedAmount.minus(event.params.amount)
   candidate.pendingWithdrawalAmount = candidate.pendingWithdrawalAmount.plus(event.params.amount)
 
-  const unstaked = new Unstaked(transaction.id + "#" + candidate.txCount.toString());
+  const unstaked = new Unstaked(transaction.id + '#' + transaction.numEvent.toString());
 
   unstaked.transaction = transaction.id;
   unstaked.timestamp = transaction.timestamp;
@@ -165,6 +161,8 @@ export function handleUnstaked(event: UnstakedEvent): void {
     newList.push(stakeId)
     candidate.stakedUserList = newList
   }
+  factory.save()
+  updateDailyStakingData(event)
 
   unstaked.save();
   user.save();
@@ -176,9 +174,6 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
   let factory = Factory.load('1');
   if (factory == null) {
     factory = new Factory('1')
-    factory.totalStaked = ZERO_BI
-    factory.totalPendingWithdrawal = ZERO_BI
-    factory.numOfCandidate = ZERO_BI
   } 
   // factory.totalStaked = factory.totalStaked.minus(event.params.amount)
 
@@ -189,7 +184,7 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
   } 
   candidate.pendingWithdrawalAmount = candidate.pendingWithdrawalAmount.minus(event.params.amount)
 
-  const withdrawal = new Withdrawal(transaction.id + "#" + candidate.txCount.toString());
+  const withdrawal = new Withdrawal(transaction.id + '#' + transaction.numEvent.toString());
 
   withdrawal.transaction = transaction.id;
   withdrawal.timestamp = transaction.timestamp;
@@ -235,6 +230,8 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
     newList.push(stakeId)
     candidate.stakedUserList = newList
   }
+  factory.save()
+  updateDailyStakingData(event)
 
   withdrawal.save();
   user.save();
@@ -263,7 +260,7 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
 //   // tx update
 //   let transaction = loadTransaction(event);
 //   let restake = new Restaked(
-//     transaction.id + "#" + candidate.txCount.toString()
+//     transaction.id
 //   );
 //   restake.transaction = transaction.id;
 //   restake.timestamp = transaction.timestamp;
@@ -336,7 +333,7 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
 //   // tx update
 //   let transaction = loadTransaction(event);
 //   let unstake = new Unstaked(
-//     transaction.id + "#" + candidate.txCount.toString()
+//     transaction.id
 //   );
 //   unstake.transaction = transaction.id;
 //   unstake.timestamp = transaction.timestamp;
@@ -403,7 +400,7 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
 //   // tx update
 //   let transaction = loadTransaction(event);
 //   let withdraw = new Withdrawal(
-//     transaction.id + "#" + candidate.txCount.toString()
+//     transaction.id
 //   );
 //   withdraw.transaction = transaction.id;
 //   withdraw.timestamp = transaction.timestamp;

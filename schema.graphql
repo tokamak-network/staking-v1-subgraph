@@ -5,6 +5,12 @@ type Factory @entity {
   numOfCandidate: BigInt!
 }
 
+type StakingDayData @entity {
+  id: ID!
+  date: Int!
+  totalStaked: BigInt!
+}
+
 type Candidate @entity {
   # candidate index
   id: Bytes!
@@ -19,7 +25,10 @@ type Candidate @entity {
 	stakedAmount: BigInt!
   pendingWithdrawalAmount: BigInt!
   txCount: BigInt!
-  commissionRate: BigDecimal!
+  commissionRate: BigInt!
+  prevTotalSupply: BigInt!
+  nextTotalSupply: BigInt!
+  seigs: BigInt!
   # user info who are staking to this candidate
 	stakedUserList: [UserStaked!]!
   # derived values
@@ -68,6 +77,7 @@ type Transaction @entity {
   # gas used during txn execution
   gasUsed: BigInt
   gasPrice: BigInt!
+  numEvent: BigInt!
   # derived values
   staked: [Staked]! @derivedFrom(field: "transaction")
   unstaked: [Unstaked]! @derivedFrom(field: "transaction")
@@ -84,8 +94,8 @@ type AddedSeigAtLayer @entity(immutable: true) {
   layer2: Bytes! # address
   seigs: BigInt! # uint256
   operatorSeigs: BigInt! # uint256
-  #nextTotalSupply: BigInt! # uint256
-  #prevTotalSupply: BigInt! # uint256
+  nextTotalSupply: BigInt! # uint256
+  prevTotalSupply: BigInt! # uint256
   #blockNumber: BigInt!
   #blockTimestamp: BigInt!
   #transactionHash: Bytes!
@@ -133,24 +143,6 @@ type Withdrawal @entity(immutable: true) {
   user: User!
   sender: Bytes! # address
   amount: BigInt! # uint256
-}
-
-type Comitted @entity(immutable: true) {
-  id: Bytes!
-  layer2: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
-}
-
-type CommissionRateSet @entity(immutable: true) {
-  id: Bytes!
-  layer2: Bytes! # address
-  previousRate: BigInt! # uint256
-  newRate: BigInt! # uint256
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
 }
 
 
