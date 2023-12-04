@@ -25,6 +25,7 @@ export function handleCandidateContractCreated (event: CandidateContractCreated)
   candidate.stakedUserList = []
   candidate.prevTotalSupply = ZERO_BI
   candidate.nextTotalSupply = ZERO_BI
+  candidate.seigs = ZERO_BI
   
   // candidate.txCount = ZERO_BIts
   candidate.stakedAmount = ZERO_BI
