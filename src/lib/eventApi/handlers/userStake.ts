@@ -1,7 +1,7 @@
 import { UserStaked, Candidate } from '@/schema';
 import { getCandidate } from "./candidate";
-import { ZERO_BI } from "@/constants";
-import { Transactions } from "@/types";
+import { ZERO_BI } from "../../../../utils/constants";
+import { Transactions } from "../../../../types";
 
 export function handleUserStake(event: Transactions): void {
   const userId = event.params.depositor.toString();
