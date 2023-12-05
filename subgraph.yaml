@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: SeigManager
-    network: mainnet
+    network: goerli
     source:
       address: "0x50255c955d0F760C8512ff556453AEe6502ef47f"
       abi: SeigManager
-      startBlock: 18416550
+      startBlock: 9890000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -43,11 +43,11 @@ dataSources:
       file: ./src/mappings/seig-manager.ts
   - kind: ethereum
     name: DepositManager
-    network: mainnet
+    network: goerli
     source:
       address: "0x0e1EF78939F9d3340e63A7a1077d50999CC6B64f"
       abi: DepositManager
-      startBlock: 18416550
+      startBlock: 9890000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -69,11 +69,11 @@ dataSources:
       file: ./src/mappings/deposit-manager.ts
   - kind: ethereum
     name: DAOCommittee
-    network: mainnet
+    network: goerli
     source:
       address: "0x3C5ffEe61A384B384ed38c0983429dcDb49843F6"
       abi: DAOCommittee
-      startBlock: 18416550
+      startBlock: 8437265
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7

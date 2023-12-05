@@ -13,7 +13,7 @@ type StakingDayData @entity {
 
 type Candidate @entity {
   # candidate index
-  id: Bytes!
+  id: ID!
   candidate: Bytes!
   candidateContract: Bytes! # address
   name: String! # string
@@ -62,6 +62,7 @@ type UserStaked @entity {
   # user address
   user: User!
   # index of candidate
+  stakeOf: BigInt!
   candidate: Candidate!
   stakedAmount: BigInt!
   pendingWithdrawalAmount: BigInt!

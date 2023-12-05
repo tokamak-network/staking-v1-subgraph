@@ -1,10 +1,3 @@
-// import { SeigManager } from './../../generated/SeigManager/SeigManager';
-// import { 
-//   Candidate,
-//   Factory,
-//   UpdatedSeigniorage
-// } from '../../generated/schema'
-// import {  ONE_BI, ZERO_BD, ZERO_BI } from '../../utils/constants';
 import { AddedSeigAtLayer, Candidate, Factory, User, UserStaked } from '../../generated/schema';
 import {
   // UpdatedSeigniorage as UpdatedSeigniorageEvent,
@@ -15,12 +8,14 @@ import {
 import { ZERO_BI, BI_27 } from "../../constants";
 import { loadTransaction } from '../../utils';
 import { updateDailyStakingData } from '../../utils/intervalUpdates';
+import { FIVE_BI, seigmanagerContract } from '../../utils/constants';
+import { Address } from "@graphprotocol/graph-ts"
 
 // import { loadTransaction } from '../../utils';
 
 export function handlerCommissionRateSet (event: CommissionRateEvent): void {
-  let candidate = Candidate.load(event.params.layer2)
-  if (candidate === null) candidate = new Candidate(event.params.layer2)
+  let candidate = Candidate.load(event.params.layer2.toHexString())
+  if (candidate === null) candidate = new Candidate(event.params.layer2.toHexString())
   
   candidate.commissionRate = event.params.newRate
   candidate.save()
@@ -34,8 +29,8 @@ export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
   factory.totalStaked = factory.totalStaked.plus(event.params.seigs)
 
   // event.params.layer2
-  let candidate = Candidate.load(event.params.layer2)
-  if (candidate === null) candidate = new Candidate(event.params.layer2)
+  let candidate = Candidate.load(event.params.layer2.toHexString())
+  if (candidate === null) candidate = new Candidate(event.params.layer2.toHexString())
   const numOfStaker = candidate.stakedUserList.length
   const transaction = loadTransaction(event);
 
@@ -43,13 +38,16 @@ export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
     const stakedUserId = candidate.stakedUserList[i]
     let stakedUser = UserStaked.load(stakedUserId)
     if (stakedUser === null) stakedUser = new UserStaked(stakedUserId)
-    
+    const minimumAmount = FIVE_BI.times(BI_27)
     const stakedAmount = stakedUser.stakedAmount
+    
     const stakeRate = stakedAmount.times(BI_27).div(candidate.stakedAmount)
     const seigPerUser = stakeRate.times(event.params.seigs).div(BI_27)
     stakedUser.stakedAmount = stakedUser.stakedAmount.plus(seigPerUser)
     const userId = stakedUser.user
-
+    // if (stakedUser.stakeOf.gt(minimumAmount)) {
+      stakedUser.stakeOf = seigmanagerContract.stakeOf1(Address.fromString(stakedUser.candidate), Address.fromString(userId))
+    // }
     let user = User.load(userId)
     if (user === null) user = new User(userId)
     user.totalStaked= user.totalStaked.plus(seigPerUser)
@@ -60,7 +58,7 @@ export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
   }
 
   const addedSeig = new AddedSeigAtLayer(transaction.id + '#' + candidate.txCount.toString())
-  addedSeig.candidate = event.params.layer2
+  addedSeig.candidate = event.params.layer2.toHexString()
   addedSeig.layer2 = event.params.layer2
   addedSeig.seigs = event.params.seigs
   addedSeig.operatorSeigs = event.params.operatorSeigs

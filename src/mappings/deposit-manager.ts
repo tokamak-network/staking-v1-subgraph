@@ -9,6 +9,8 @@ import { loadTransaction } from "../../utils";
 import { Candidate, Staked, User, UserStaked, Factory, Unstaked, Withdrawal } from '../../generated/schema';
 import { ZERO_BI } from "../../constants";
 import { updateDailyStakingData } from '../../utils/intervalUpdates';
+import { FIVE_BI, seigmanagerContract } from '../../utils/constants';
+import { Address } from "@graphprotocol/graph-ts"
 
 // export function handleStaked(event: StakedEvent): void {
 //   const handler = new stakingV1Event(event);
@@ -37,9 +39,9 @@ export function handleStaked(event: StakedEvent): void {
   factory.totalStaked = factory.totalStaked.plus(event.params.amount)
 
   const transaction = loadTransaction(event);
-  let candidate = Candidate.load(event.params.layer2);
+  let candidate = Candidate.load(event.params.layer2.toHexString());
   if (candidate == null) {
-    candidate = new Candidate(event.params.layer2)
+    candidate = new Candidate(event.params.layer2.toHexString())
   } 
   candidate.stakedAmount = candidate.stakedAmount.plus(event.params.amount)
 
@@ -63,7 +65,7 @@ export function handleStaked(event: StakedEvent): void {
     user.totalEarnedSeig = ZERO_BI
   }
   user.totalStaked = user.totalStaked.plus(event.params.amount);
-  user.candidate = event.params.layer2
+  user.candidate = event.params.layer2.toHexString()
 
   staked.user = user.id
 
@@ -79,9 +81,11 @@ export function handleStaked(event: StakedEvent): void {
     userStaked.user = userId;
     userStaked.candidate = candidate.id;
     userStaked.stakedAmount = ZERO_BI;
+    userStaked.stakeOf = ZERO_BI;
     userStaked.pendingWithdrawalAmount = ZERO_BI;
   }
   userStaked.stakedAmount = userStaked.stakedAmount.plus(event.params.amount);
+  userStaked.stakeOf = userStaked.stakeOf.plus(event.params.amount);
   // user.userStaked = stakeId
 
   if (!candidate.stakedUserList.includes(stakeId)) {
@@ -106,9 +110,9 @@ export function handleUnstaked(event: UnstakedEvent): void {
   factory.totalStaked = factory.totalStaked.minus(event.params.amount)
 
   const transaction = loadTransaction(event);
-  let candidate = Candidate.load(event.params.layer2);
+  let candidate = Candidate.load(event.params.layer2.toHexString());
   if (candidate == null) {
-    candidate = new Candidate(event.params.layer2)
+    candidate = new Candidate(event.params.layer2.toHexString())
   } 
   candidate.stakedAmount = candidate.stakedAmount.minus(event.params.amount)
   candidate.pendingWithdrawalAmount = candidate.pendingWithdrawalAmount.plus(event.params.amount)
@@ -134,7 +138,7 @@ export function handleUnstaked(event: UnstakedEvent): void {
   }
   user.totalStaked = user.totalStaked.minus(event.params.amount);
   user.pendingWithdrawalAmount = user.pendingWithdrawalAmount.plus(event.params.amount);
-  user.candidate = event.params.layer2
+  user.candidate = event.params.layer2.toHexString()
 
   unstaked.user = user.id
 
@@ -150,9 +154,12 @@ export function handleUnstaked(event: UnstakedEvent): void {
     userStaked.user = userId;
     userStaked.candidate = candidate.id;
     userStaked.stakedAmount = ZERO_BI;
+    userStaked.stakeOf = ZERO_BI;
     userStaked.pendingWithdrawalAmount = ZERO_BI;
   }
   userStaked.stakedAmount = userStaked.stakedAmount.minus(event.params.amount);
+  userStaked.stakeOf = userStaked.stakeOf.minus(event.params.amount)
+  
   userStaked.pendingWithdrawalAmount = userStaked.pendingWithdrawalAmount.plus(event.params.amount);
   // user.userStaked = stakeId
 
@@ -178,9 +185,9 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
   // factory.totalStaked = factory.totalStaked.minus(event.params.amount)
 
   const transaction = loadTransaction(event);
-  let candidate = Candidate.load(event.params.layer2);
+  let candidate = Candidate.load(event.params.layer2.toHexString());
   if (candidate == null) {
-    candidate = new Candidate(event.params.layer2)
+    candidate = new Candidate(event.params.layer2.toHexString())
   } 
   candidate.pendingWithdrawalAmount = candidate.pendingWithdrawalAmount.minus(event.params.amount)
 
@@ -204,7 +211,7 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
     user.totalEarnedSeig = ZERO_BI
   }
   user.pendingWithdrawalAmount = user.pendingWithdrawalAmount.minus(event.params.amount);
-  user.candidate = event.params.layer2
+  user.candidate = event.params.layer2.toHexString()
 
   withdrawal.user = user.id
 
