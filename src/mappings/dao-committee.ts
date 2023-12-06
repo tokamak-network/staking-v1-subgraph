@@ -15,9 +15,9 @@ export function handleCandidateContractCreated (event: CandidateContractCreated)
   factory.numOfCandidate = factory.numOfCandidate.plus(ONE_BI)
   // factory.factoryCandidateCount = factory.factoryCandidateCount.plus(ONE_BI)
 
-  let candidate = new Candidate(event.params.candidate.toHexString()) as Candidate
+  let candidate = new Candidate(event.params.candidateContract.toHexString()) as Candidate
   
-  candidate.id = event.params.candidate.toHexString()
+  candidate.id = event.params.candidateContract.toHexString()
   candidate.candidate = event.params.candidate
   candidate.candidateContract = event.params.candidateContract
   candidate.txCount = ZERO_BI

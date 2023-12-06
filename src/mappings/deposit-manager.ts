@@ -42,6 +42,10 @@ export function handleStaked(event: StakedEvent): void {
   let candidate = Candidate.load(event.params.layer2.toHexString());
   if (candidate == null) {
     candidate = new Candidate(event.params.layer2.toHexString())
+    candidate.stakedAmount = ZERO_BI
+    candidate.stakedUserList = [];
+    candidate.prevTotalSupply = ZERO_BI
+    candidate.nextTotalSupply = ZERO_BI
   } 
   candidate.stakedAmount = candidate.stakedAmount.plus(event.params.amount)
 
