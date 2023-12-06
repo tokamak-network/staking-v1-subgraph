@@ -3,7 +3,7 @@ import { BigInt, BigDecimal, Address } from '@graphprotocol/graph-ts'
 import { SeigManager as SeigManagerContract } from '../generated/SeigManager/SeigManager'
 
 export const ADDRESS_ZERO = '0x0000000000000000000000000000000000000000'
-export const SEIGMANAGER_ADDRESS = '0x50255c955d0F760C8512ff556453AEe6502ef47f'
+export const SEIGMANAGER_ADDRESS = '0x0b55a0f463b6defb81c6063973763951712d0e5f'
 
 export let ZERO_BI = BigInt.fromI32(0)
 export let ONE_BI = BigInt.fromI32(1)
