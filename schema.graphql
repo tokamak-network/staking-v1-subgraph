@@ -85,6 +85,7 @@ type Transaction @entity {
   restaked: [Restaked]! @derivedFrom(field: "transaction")
 	withdrawal: [Withdrawal]! @derivedFrom(field: "transaction")
   addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "transaction")
+  changedMember: [ChangedMember]! @derivedFrom(field: "transaction")
 }
 
 type AddedSeigAtLayer @entity(immutable: true) {
@@ -100,6 +101,20 @@ type AddedSeigAtLayer @entity(immutable: true) {
   #blockNumber: BigInt!
   #blockTimestamp: BigInt!
   #transactionHash: Bytes!
+}
+
+type Member @entity(immutable: true) {
+  id: ID!
+  candidate: Candidate!
+}
+
+type ChangedMember @entity(immutable: true) {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+  slotIndex: BigInt!
+  prevMember: Bytes!
+  newMember: Bytes!
 }
 
 type Staked @entity(immutable: true) {
