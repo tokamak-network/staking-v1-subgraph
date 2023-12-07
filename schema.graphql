@@ -103,7 +103,7 @@ type AddedSeigAtLayer @entity(immutable: true) {
   #transactionHash: Bytes!
 }
 
-type Member @entity(immutable: true) {
+type Member @entity(immutable: false) {
   id: ID!
   candidate: Candidate!
 }
