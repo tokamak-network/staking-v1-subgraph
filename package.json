@@ -6,6 +6,7 @@
     "build": "graph build",
     "create": "graph create cd4761/staking-v1-subgraph --node https://api.thegraph.com/deploy/",
     "deploy-goerli": "graph deploy cd4761/staking-v1-subgraph-goerli --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
+    "deploy-sepolia": "graph deploy cd4761/staking-v1-subgraph-sepolia --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "deploy": "graph deploy cd4761/staking-v1-subgraph --ipfs https://api.thegraph.com/ipfs/ --node https://api.thegraph.com/deploy/",
     "create-local": "graph create --node https://api.thegraph.com/deploy/ cd4761/staking-v1-subgraph",
     "remove-local": "graph remove --node https://api.thegraph.com/deploy/ cd4761/staking-v1-subgraph",
