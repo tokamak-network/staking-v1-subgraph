@@ -1,4 +1,4 @@
-import { Factory, Candidate, Member, ChangedMember } from '../../generated/schema'
+import { Factory, Candidate, Member, ChangedMember, ChangedMemo } from '../../generated/schema'
 import { ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO } from '../../utils/constants'
 import { CandidateContractCreated, ChangedMember as ChangedMemberEvent } from '../../generated/DAOCommittee/DAOCommittee';
 import { loadTransaction } from '../../utils';
@@ -58,3 +58,20 @@ export function handleChangedMember (event: ChangedMemberEvent): void {
   transaction.save()
 
 }
+
+// export function handleChangeMemo (event: ChangedMemberEvent): void {
+//   const transaction = loadTransaction(event);
+//   const changedMemo = new ChangedMemo(transaction.id + '#' + transaction.numEvent.toString())
+//   changedMemo
+//   changedMemo.transaction = transaction.id;
+//   changedMemo.timestamp = transaction.timestamp;
+
+//   let candidate = Candidate.load(event.params.slotIndex.toString());
+//   if (candidate === null) {
+//     candidate = new Candidate(event.params.)
+//   }
+//   candidate.save()
+//   changedMemo.save()
+//   transaction.save()
+
+// }

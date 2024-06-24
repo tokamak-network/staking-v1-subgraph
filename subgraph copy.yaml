@@ -4,11 +4,11 @@ schema:
 dataSources:
   - kind: ethereum
     name: SeigManager
-    network: sepolia
+    network: mainnet
     source:
-      address: "0x2320542ae933FbAdf8f5B97cA348c7CeDA90fAd7"
+      address: "0x0b55a0f463b6defb81c6063973763951712d0e5f"
       abi: SeigManager
-      startBlock: 4700000
+      startBlock: 18416550
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -43,11 +43,11 @@ dataSources:
       file: ./src/mappings/seig-manager.ts
   - kind: ethereum
     name: DepositManager
-    network: sepolia
+    network: mainnet
     source:
-      address: "0x90ffcc7F168DceDBEF1Cb6c6eB00cA73F922956F"
+      address: "0x0b58ca72b12f01fc05f8f252e226f3e2089bd00e"
       abi: DepositManager
-      startBlock: 4700000
+      startBlock: 18416550
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -69,11 +69,11 @@ dataSources:
       file: ./src/mappings/deposit-manager.ts
   - kind: ethereum
     name: DAOCommittee
-    network: sepolia
+    network: mainnet
     source:
-      address: "0xA2101482b28E3D99ff6ced517bA41EFf4971a386"
+      address: "0xDD9f0cCc044B0781289Ee318e5971b0139602C26"
       abi: DAOCommittee
-      startBlock: 4700000
+      startBlock: 18416550
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -84,8 +84,8 @@ dataSources:
         # - AgendaExecuted
         # - AgendaVoteCasted
         - CandidateContractCreated
-        - ChangedMember
-        - ChangedMemo
+        # - ChangedMember
+        # - ChangedMemo
         # - ChangedSlotMaximum
         # - ClaimedActivityReward
         # - Layer2Registered
@@ -103,10 +103,10 @@ dataSources:
         #   handler: handleAgendaVoteCasted
         - event: CandidateContractCreated(indexed address,indexed address,string)
           handler: handleCandidateContractCreated
-        - event: ChangedMember(indexed uint256,address,indexed address)
-          handler: handleChangedMember
-        - event: ChangedMemo(address,string)
-          handler: handleChangedMemo
+        # - event: ChangedMember(indexed uint256,address,indexed address)
+        #   handler: handleChangedMember
+        # - event: ChangedMemo(address,string)
+        #   handler: handleChangedMemo
         # - event: ChangedSlotMaximum(indexed uint256,indexed uint256)
         #   handler: handleChangedSlotMaximum
         # - event: ClaimedActivityReward(indexed address,address,uint256)
@@ -114,29 +114,3 @@ dataSources:
         # - event: Layer2Registered(indexed address,indexed address,string)
         #   handler: handleLayer2Registered
       file: ./src/mappings/dao-committee.ts
-  - kind: ethereum
-    name: Layer2Manager
-    network: sepolia
-    source:
-      address: "0xb5c67BEA9D0c30eD2edD56D6Ff4690b5ebf99B7E"
-      abi: Layer2Manager
-      startBlock: 5859621
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - RegisteredLayer2Candidate
-        # - SetMinimumInitialDepositAmount
-        # - SetAddresses
-      abis:
-        - name: Layer2Manager
-          file: ./abis/Layer2Manager.json
-      eventHandlers:
-        - event: RegisteredLayer2Candidate(address,uint256,string,address,address)
-          handler: handleRegisteredLayer2Candidate
-        # - event: SetMinimumInitialDepositAmount(uint256)
-        #   handler: handleSetMinimumInitialDepositAmount
-        # - event: SetAddresses(address,address,address,address,address,address,address,address)
-        #   handler: handleSetAddresses
-      file: ./src/mappings/layer-2-manager.ts

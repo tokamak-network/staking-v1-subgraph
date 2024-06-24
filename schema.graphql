@@ -39,6 +39,17 @@ type Candidate @entity {
   addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "candidate")
 }
 
+type RegisteredLayer2Candidate @entity(immutable: true) {
+  id: Bytes!
+  systemConfig: Bytes! # address
+  wtonAmount: BigInt! # uint256
+  memo: String! # string
+  operator: Bytes! # address
+  layer2Candidate: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
 
 type User @entity {
 	# user address
@@ -115,6 +126,14 @@ type ChangedMember @entity(immutable: true) {
   slotIndex: BigInt!
   prevMember: Bytes!
   newMember: Bytes!
+}
+
+type ChangedMemo @entity(immutable: true) {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+  candidate: Bytes!
+  name: String!
 }
 
 type Staked @entity(immutable: true) {
