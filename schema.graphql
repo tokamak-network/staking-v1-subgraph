@@ -29,6 +29,7 @@ type Candidate @entity {
   prevTotalSupply: BigInt!
   nextTotalSupply: BigInt!
   seigs: BigInt!
+  layer2Candidate: Layer2Candidate
   # user info who are staking to this candidate
 	stakedUserList: [UserStaked!]!
   # derived values
@@ -39,16 +40,15 @@ type Candidate @entity {
   addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "candidate")
 }
 
-type RegisteredLayer2Candidate @entity(immutable: true) {
-  id: Bytes!
+type Layer2Candidate @entity(immutable: true) {
+  id: ID!
   systemConfig: Bytes! # address
   wtonAmount: BigInt! # uint256
   memo: String! # string
-  operator: Bytes! # address
+  candidate: Candidate! # address
+  operator: Bytes!
   layer2Candidate: Bytes! # address
-  blockNumber: BigInt!
-  blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  registeredTime: BigInt!
 }
 
 type User @entity {
