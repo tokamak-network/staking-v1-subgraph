@@ -48,6 +48,10 @@ type Layer2Candidate @entity(immutable: true) {
   candidate: Candidate! # address
   operator: Bytes!
   layer2Candidate: Bytes! # address
+  bridge: Bytes!
+  stateRoot: Bytes!
+  txData: Bytes!
+  portal: Bytes!
   registeredTime: BigInt!
 }
 

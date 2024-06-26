@@ -1,8 +1,6 @@
 [
   {
-    "inputs": [
-      { "internalType": "address", "name": "_admin", "type": "address" }
-    ],
+    "inputs": [],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -10,67 +8,252 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "address",
-        "name": "previousAdmin",
+        "name": "previousOwner",
         "type": "address"
       },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "newAdmin",
-        "type": "address"
-      }
-    ],
-    "name": "AdminChanged",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "implementation",
+        "name": "newOwner",
         "type": "address"
       }
     ],
-    "name": "Upgraded",
+    "name": "OwnershipTransferred",
     "type": "event"
   },
-  { "stateMutability": "payable", "type": "fallback" },
   {
     "inputs": [],
-    "name": "admin",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      { "internalType": "address", "name": "_admin", "type": "address" }
-    ],
-    "name": "changeAdmin",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "implementation",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "addresses",
+    "outputs": [
       {
         "internalType": "address",
-        "name": "_implementation",
+        "name": "l1CrossDomainMessenger",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "l1ERC721Bridge",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "l1StandardBridge",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "l2OutputOracle",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "optimismPortal",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "optimismMintableERC20Factory",
         "type": "address"
       }
     ],
-    "name": "upgradeTo",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "l1CrossDomainMessenger",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "addr_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "l1ERC721Bridge",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "addr_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "l1StandardBridge",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "addr_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "l2OutputOracle",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "addr_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "l2Registry",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "l2Ton",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "optimismMintableERC20Factory",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "addr_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "optimismPortal",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "addr_",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "components": [
+          {
+            "internalType": "address",
+            "name": "l1CrossDomainMessenger",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "l1ERC721Bridge",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "l1StandardBridge",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "l2OutputOracle",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "optimismPortal",
+            "type": "address"
+          },
+          {
+            "internalType": "address",
+            "name": "optimismMintableERC20Factory",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct LegacySystemConfig.Addresses",
+        "name": "_addresses",
+        "type": "tuple"
+      },
+      {
+        "internalType": "address",
+        "name": "_l2Ton",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_l2Registry",
+        "type": "address"
+      }
+    ],
+    "name": "setAddresses",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -79,15 +262,13 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_implementation",
+        "name": "newOwner",
         "type": "address"
-      },
-      { "internalType": "bytes", "name": "_data", "type": "bytes" }
+      }
     ],
-    "name": "upgradeToAndCall",
-    "outputs": [{ "internalType": "bytes", "name": "", "type": "bytes" }],
-    "stateMutability": "payable",
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
-  },
-  { "stateMutability": "payable", "type": "receive" }
+  }
 ]

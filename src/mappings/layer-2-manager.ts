@@ -1,4 +1,5 @@
 import { ZERO_BI } from "../../constants";
+import { SystemConfig } from '../../generated/Layer2Manager/SystemConfig';
 import {
   RegisteredLayer2Candidate as RegisteredLayer2CandidateEvent,
   // RoleAdminChanged as RoleAdminChangedEvent,
@@ -24,12 +25,8 @@ export function handleRegisteredLayer2Candidate(
   let candidate = Candidate.load(event.params.layer2Candidate.toHexString());
   if (candidate === null) {
     candidate = new Candidate(event.params.layer2Candidate.toHexString())
-    candidate.stakedAmount = ZERO_BI
-    candidate.stakedUserList = [];
-    candidate.prevTotalSupply = ZERO_BI
-    candidate.nextTotalSupply = ZERO_BI
   } 
-  
+  let systemConfig = SystemConfig.bind(event.params.systemConfig)
   entity.candidate = candidate.id
 
   entity.systemConfig = event.params.systemConfig
@@ -38,8 +35,12 @@ export function handleRegisteredLayer2Candidate(
   entity.operator = event.params.operator
   entity.layer2Candidate = event.params.layer2Candidate
   entity.registeredTime = event.block.timestamp
+  entity.bridge = systemConfig.l1StandardBridge()
+  entity.stateRoot = systemConfig.l2OutputOracle()
+  entity.txData = systemConfig.l1CrossDomainMessenger()
+  entity.portal = systemConfig.optimismPortal()
   
-  // candidate.layer2Candidate = event.params.operator.toHexString();
+  candidate.layer2Candidate = event.params.layer2Candidate.toHexString();
 
   candidate.save()
   entity.save()
