@@ -1,22 +1,15 @@
-import { ZERO_BI } from "../../constants";
 import { SystemConfig } from '../../generated/Layer2Manager/SystemConfig';
 import {
   RegisteredLayer2Candidate as RegisteredLayer2CandidateEvent,
-  // RoleAdminChanged as RoleAdminChangedEvent,
-  // RoleGranted as RoleGrantedEvent,
-  // RoleRevoked as RoleRevokedEvent,
   // SetAddresses as SetAddressesEvent,
   // SetMinimumInitialDepositAmount as SetMinimumInitialDepositAmountEvent
 } from "../../generated/Layer2Manager/Layer2Manager"
 import {
   Layer2Candidate,
   Candidate,
-  // RoleAdminChanged,
-  // RoleGranted,
-  // RoleRevoked,
-  // SetAddresses,
   // SetMinimumInitialDepositAmount
 } from "../../generated/schema"
+import { ZERO_BD } from '../../utils/constants';
 
 export function handleRegisteredLayer2Candidate(
   event: RegisteredLayer2CandidateEvent
@@ -39,6 +32,8 @@ export function handleRegisteredLayer2Candidate(
   entity.stateRoot = systemConfig.l2OutputOracle()
   entity.txData = systemConfig.l1CrossDomainMessenger()
   entity.portal = systemConfig.optimismPortal()
+  
+  entity.txCount = ZERO_BD
   
   candidate.layer2Candidate = event.params.layer2Candidate.toHexString();
 

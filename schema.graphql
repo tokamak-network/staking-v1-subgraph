@@ -40,19 +40,21 @@ type Candidate @entity {
   addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "candidate")
 }
 
-type Layer2Candidate @entity(immutable: true) {
+type Layer2Candidate @entity {
   id: ID!
-  systemConfig: Bytes! # address
-  wtonAmount: BigInt! # uint256
-  memo: String! # string
-  candidate: Candidate! # address
-  operator: Bytes!
-  layer2Candidate: Bytes! # address
-  bridge: Bytes!
-  stateRoot: Bytes!
-  txData: Bytes!
-  portal: Bytes!
-  registeredTime: BigInt!
+  memo: String # string
+  candidate: Candidate # address
+  operator: Bytes
+  layer2Candidate: Bytes # address
+  wtonAmount: BigInt # uint256
+  systemConfig: Bytes # address
+  bridge: Bytes
+  stateRoot: Bytes
+  txData: Bytes
+  portal: Bytes
+  registeredTime: BigInt
+  txCount: BigDecimal
+  seigGiven: [SeigGiven2]! @derivedFrom(field: "layer2Candidate")
 }
 
 type User @entity {
@@ -101,6 +103,7 @@ type Transaction @entity {
 	withdrawal: [Withdrawal]! @derivedFrom(field: "transaction")
   addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "transaction")
   changedMember: [ChangedMember]! @derivedFrom(field: "transaction")
+  seigGiven2: [SeigGiven2]! @derivedFrom(field: "transaction")
 }
 
 type AddedSeigAtLayer @entity(immutable: true) {
@@ -193,17 +196,19 @@ type OnSnapshot @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type SeigGiven @entity(immutable: true) {
-  id: Bytes!
+type SeigGiven2 @entity(immutable: true) {
+  id: ID!
   layer2: Bytes! # address
   totalSeig: BigInt! # uint256
   stakedSeig: BigInt! # uint256
   unstakedSeig: BigInt! # uint256
   powertonSeig: BigInt! # uint256
+  layer2Candidate: Layer2Candidate!
   pseig: BigInt! # uint256
-  blockNumber: BigInt!
+  l2TotalSeigs: BigInt!
+  layer2Seigs: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transaction: Transaction!
 }
 
 type UpdatedSeigniorage @entity(immutable: true) {

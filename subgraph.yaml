@@ -36,8 +36,8 @@ dataSources:
           handler: handlerCommissionRateSet
         # - event: OnSnapshot(uint256)
         #   handler: handleOnSnapshot
-        # - event: SeigGiven(indexed address,uint256,uint256,uint256,uint256,uint256)
-        #   handler: handleSeigGiven
+        - event: SeigGiven2(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
+          handler: handleSeigGiven
         # - event: UpdatedSeigniorage(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
         #   handler: handleUpdatedSeigniorage
       file: ./src/mappings/seig-manager.ts
