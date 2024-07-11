@@ -56,6 +56,7 @@ dataSources:
         - Deposited
         - WithdrawalProcessed
         - WithdrawalRequested
+        - WithdrawalAndDeposited
       abis:
         - name: DepositManager
           file: ./abis/DepositManager.json
@@ -66,6 +67,8 @@ dataSources:
           handler: handleWithdrawal
         - event: WithdrawalRequested(indexed address,address,uint256)
           handler: handleUnstaked
+        - event: WithdrawalAndDeposited(indexed address,address,uint256)
+          handler: handleWithdrawalAndDeposited
       file: ./src/mappings/deposit-manager.ts
   - kind: ethereum
     name: DAOCommittee

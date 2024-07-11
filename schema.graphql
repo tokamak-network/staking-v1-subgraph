@@ -38,6 +38,7 @@ type Candidate @entity {
   restaked: [Restaked]! @derivedFrom(field: "candidate")
 	withdrawal: [Withdrawal]! @derivedFrom(field: "candidate")
   addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "candidate")
+  withdrawalAndDeposited: [WithdrawalAndDeposited]! @derivedFrom(field: "candidate")
 }
 
 type Layer2Candidate @entity {
@@ -72,6 +73,7 @@ type User @entity {
   unstaked: [Unstaked]! @derivedFrom(field: "user")
   restaked: [Restaked]! @derivedFrom(field: "user")
 	withdrawal: [Withdrawal]! @derivedFrom(field: "user")
+  withdrawalAndDeposited: [WithdrawalAndDeposited]! @derivedFrom(field: "user")
 }
 
 type UserStaked @entity {
@@ -104,6 +106,7 @@ type Transaction @entity {
   addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "transaction")
   changedMember: [ChangedMember]! @derivedFrom(field: "transaction")
   seigGiven2: [SeigGiven2]! @derivedFrom(field: "transaction")
+  withdrawalAndDeposited: [WithdrawalAndDeposited]! @derivedFrom(field: "transaction")
 }
 
 type AddedSeigAtLayer @entity(immutable: true) {
@@ -166,6 +169,17 @@ type Unstaked @entity(immutable: true) {
 }
 
 type Restaked @entity(immutable: true) {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+  eventName: String!
+  candidate: Candidate!
+  user: User!
+  sender: Bytes! # address
+  amount: BigInt! # uint256
+}
+
+type WithdrawalAndDeposited @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
   timestamp: BigInt!
