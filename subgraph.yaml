@@ -147,3 +147,53 @@ dataSources:
         # - event: SetAddresses(address,address,address,address,address,address,address,address)
         #   handler: handleSetAddresses
       file: ./src/mappings/layer-2-manager.ts
+  - kind: ethereum
+    name: L1CrossDomainMessenger
+    network: sepolia
+    source:
+      address: "0xc123047238e8f4bFB7Ad849cA4364b721B5ABD8A"
+      abi: L1CrossDomainMessenger
+      startBlock: 5614234
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - FailedRelayedFastMessage
+        - FailedRelayedMessage
+        - Initialized
+        - MessageAllowed
+        - MessageBlocked
+        - OwnershipTransferred
+        - Paused
+        - RelayedFastMessage
+        - RelayedMessage
+        - SentMessage
+        - Unpaused
+      abis:
+        - name: L1CrossDomainMessenger
+          file: ./abis/L1CrossDomainMessenger.json
+      eventHandlers:
+        - event: FailedRelayedFastMessage(indexed address,address,bytes,uint256)
+          handler: handleFailedRelayedFastMessage
+        - event: FailedRelayedMessage(indexed bytes32)
+          handler: handleFailedRelayedMessage
+        - event: Initialized(uint8)
+          handler: handleInitialized
+        - event: MessageAllowed(indexed bytes32)
+          handler: handleMessageAllowed
+        - event: MessageBlocked(indexed bytes32)
+          handler: handleMessageBlocked
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Paused(address)
+          handler: handlePaused
+        - event: RelayedFastMessage(indexed address,address,bytes,uint256)
+          handler: handleRelayedFastMessage
+        - event: RelayedMessage(indexed bytes32)
+          handler: handleRelayedMessage
+        - event: SentMessage(indexed address,address,bytes,uint256,uint256)
+          handler: handleSentMessage
+        - event: Unpaused(address)
+          handler: handleUnpaused
+      file: ./src/mappings/l1-cross-domain-messenger.ts
