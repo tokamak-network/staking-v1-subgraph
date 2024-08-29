@@ -121,7 +121,7 @@ dataSources:
     name: Layer2Manager
     network: sepolia
     source:
-      address: "0x0237839A14194085B5145D1d1e1E77dc92aCAF06"
+      address: "0xffb690feeFb2225394ad84594C4a270c04be0b55"
       abi: Layer2Manager
       startBlock: 5859621
     mapping:
@@ -129,7 +129,7 @@ dataSources:
       apiVersion: 0.0.7
       language: wasm/assemblyscript
       entities:
-        - RegisteredLayer2Candidate
+        - RegisteredCandidateAddOn
         # - SetMinimumInitialDepositAmount
         # - SetAddresses
       abis:
@@ -140,8 +140,8 @@ dataSources:
         - name: SystemConfig
           file: ./abis/SystemConfig.json
       eventHandlers:
-        - event: RegisteredLayer2Candidate(address,uint256,string,address,address)
-          handler: handleRegisteredLayer2Candidate
+        - event: RegisteredCandidateAddOn(address,uint256,string,address,address)
+          handler: handleRegisteredCandidateAddOn
         # - event: SetMinimumInitialDepositAmount(uint256)
         #   handler: handleSetMinimumInitialDepositAmount
         # - event: SetAddresses(address,address,address,address,address,address,address,address)

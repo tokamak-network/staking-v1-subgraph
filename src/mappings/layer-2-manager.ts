@@ -1,41 +1,41 @@
 import { SystemConfig } from '../../generated/Layer2Manager/SystemConfig';
 import {
-  RegisteredLayer2Candidate as RegisteredLayer2CandidateEvent,
+  RegisteredCandidateAddOn as RegisteredCandidateAddOnEvent,
   // SetAddresses as SetAddressesEvent,
   // SetMinimumInitialDepositAmount as SetMinimumInitialDepositAmountEvent
 } from "../../generated/Layer2Manager/Layer2Manager"
 import {
-  Layer2Candidate,
+  CandidateAddOn,
   Candidate,
   // SetMinimumInitialDepositAmount
 } from "../../generated/schema"
 import { ZERO_BD } from '../../utils/constants';
 
-export function handleRegisteredLayer2Candidate(
-  event: RegisteredLayer2CandidateEvent
+export function handleRegisteredCandidateAddOn(
+  event: RegisteredCandidateAddOnEvent
 ): void {
-  let entity = new Layer2Candidate(event.params.layer2Candidate.toHexString()) as Layer2Candidate
-  let candidate = Candidate.load(event.params.layer2Candidate.toHexString());
+  let entity = new CandidateAddOn(event.params.candidateAddOn.toHexString()) as CandidateAddOn
+  let candidate = Candidate.load(event.params.candidateAddOn.toHexString());
   if (candidate === null) {
-    candidate = new Candidate(event.params.layer2Candidate.toHexString())
+    candidate = new Candidate(event.params.candidateAddOn.toHexString())
   } 
-  let systemConfig = SystemConfig.bind(event.params.systemConfig)
+  let rollupConfig = SystemConfig.bind(event.params.rollupConfig)
   entity.candidate = candidate.id
 
-  entity.systemConfig = event.params.systemConfig
+  entity.rollupConfig = event.params.rollupConfig
   entity.wtonAmount = event.params.wtonAmount
   entity.memo = event.params.memo
   entity.operator = event.params.operator
-  entity.layer2Candidate = event.params.layer2Candidate
+  entity.candidateAddOn = event.params.candidateAddOn
   entity.registeredTime = event.block.timestamp
-  entity.bridge = systemConfig.l1StandardBridge()
-  entity.stateRoot = systemConfig.l2OutputOracle()
-  entity.txData = systemConfig.l1CrossDomainMessenger()
-  entity.portal = systemConfig.optimismPortal()
+  entity.bridge = rollupConfig.l1StandardBridge()
+  entity.stateRoot = rollupConfig.l2OutputOracle()
+  entity.txData = rollupConfig.l1CrossDomainMessenger()
+  entity.portal = rollupConfig.optimismPortal()
   
   entity.txCount = ZERO_BD
   
-  candidate.layer2Candidate = event.params.layer2Candidate.toHexString();
+  candidate.candidateAddOn = event.params.candidateAddOn.toHexString();
 
   candidate.save()
   entity.save()

@@ -1,4 +1,4 @@
-import { AddedSeigAtLayer, Candidate, Factory, User, UserStaked, Layer2Candidate, SeigGiven2 } from '../../generated/schema';
+import { AddedSeigAtLayer, Candidate, Factory, User, UserStaked, CandidateAddOn, SeigGiven2 } from '../../generated/schema';
 import {
   // UpdatedSeigniorage as UpdatedSeigniorageEvent,
   CoinageCreated as CandidateEvent,
@@ -82,15 +82,15 @@ export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
 
 export function handleSeigGiven (event: SeigGivenEvent): void {
   const l2Id = event.params.layer2.toHexString()
-  let l2Candidate = Layer2Candidate.load(l2Id)
-  if (l2Candidate === null) l2Candidate = new Layer2Candidate(l2Id)
+  let l2Candidate = CandidateAddOn.load(l2Id)
+  if (l2Candidate === null) l2Candidate = new CandidateAddOn(l2Id)
   
   const transaction = loadTransaction(event);
   // const seigGivenId = l2Candidate.id + '#' + (l2Candidate.txCount.plus(ONE_BD)).toString()
   const seigGiven = new SeigGiven2(transaction.id)
   
   seigGiven.layer2 = event.params.layer2
-  seigGiven.layer2Candidate = l2Candidate.id
+  seigGiven.candidateAddOn = l2Candidate.id
   seigGiven.totalSeig = event.params.totalSeig
   seigGiven.stakedSeig = event.params.stakedSeig
   seigGiven.unstakedSeig = event.params.unstakedSeig

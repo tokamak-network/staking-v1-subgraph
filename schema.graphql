@@ -29,7 +29,7 @@ type Candidate @entity {
   prevTotalSupply: BigInt!
   nextTotalSupply: BigInt!
   seigs: BigInt!
-  layer2Candidate: Layer2Candidate
+  candidateAddOn: CandidateAddOn
   # user info who are staking to this candidate
 	stakedUserList: [UserStaked!]!
   # derived values
@@ -41,21 +41,21 @@ type Candidate @entity {
   withdrawalAndDeposited: [WithdrawalAndDeposited]! @derivedFrom(field: "candidate")
 }
 
-type Layer2Candidate @entity {
+type CandidateAddOn @entity {
   id: ID!
   memo: String # string
   candidate: Candidate # address
   operator: Bytes
-  layer2Candidate: Bytes # address
+  candidateAddOn: Bytes # address
   wtonAmount: BigInt # uint256
-  systemConfig: Bytes # address
+  rollupConfig: Bytes # address
   bridge: Bytes
   stateRoot: Bytes
   txData: Bytes
   portal: Bytes
   registeredTime: BigInt
   txCount: BigDecimal
-  seigGiven: [SeigGiven2]! @derivedFrom(field: "layer2Candidate")
+  seigGiven: [SeigGiven2]! @derivedFrom(field: "candidateAddOn")
 }
 
 type User @entity {
@@ -217,7 +217,7 @@ type SeigGiven2 @entity(immutable: true) {
   stakedSeig: BigInt! # uint256
   unstakedSeig: BigInt! # uint256
   powertonSeig: BigInt! # uint256
-  layer2Candidate: Layer2Candidate!
+  candidateAddOn: CandidateAddOn!
   pseig: BigInt! # uint256
   l2TotalSeigs: BigInt!
   layer2Seigs: BigInt!
