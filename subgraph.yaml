@@ -121,7 +121,7 @@ dataSources:
     name: Layer2Manager
     network: sepolia
     source:
-      address: "0xffb690feeFb2225394ad84594C4a270c04be0b55"
+      address: "0x0fDb12aF5Fece558d17237E2D252EC5dbA25396b"
       abi: Layer2Manager
       startBlock: 5859621
     mapping:
