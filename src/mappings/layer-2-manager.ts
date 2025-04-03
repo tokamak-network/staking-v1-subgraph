@@ -29,7 +29,7 @@ export function handleRegisteredCandidateAddOn(
   entity.candidateAddOn = event.params.candidateAddOn
   entity.registeredTime = event.block.timestamp
   entity.bridge = rollupConfig.l1StandardBridge()
-  entity.stateRoot = rollupConfig.l2OutputOracle()
+  // entity.stateRoot = rollupConfig.l2OutputOracle()
   entity.txData = rollupConfig.l1CrossDomainMessenger()
   entity.portal = rollupConfig.optimismPortal()
   

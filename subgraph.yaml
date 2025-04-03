@@ -121,7 +121,7 @@ dataSources:
     name: Layer2Manager
     network: sepolia
     source:
-      address: "0x0fDb12aF5Fece558d17237E2D252EC5dbA25396b"
+      address: "0x58B4C2FEf19f5CDdd944AadD8DC99cCC71bfeFDc"
       abi: Layer2Manager
       startBlock: 5859621
     mapping:
@@ -147,85 +147,4 @@ dataSources:
         # - event: SetAddresses(address,address,address,address,address,address,address,address)
         #   handler: handleSetAddresses
       file: ./src/mappings/layer-2-manager.ts
-  - kind: ethereum
-    name: L1CrossDomainMessenger
-    network: sepolia
-    source:
-      address: "0xc123047238e8f4bFB7Ad849cA4364b721B5ABD8A"
-      abi: L1CrossDomainMessenger
-      startBlock: 5614234
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - FailedRelayedFastMessage
-        - FailedRelayedMessage
-        - Initialized
-        - MessageAllowed
-        - MessageBlocked
-        - OwnershipTransferred
-        - Paused
-        - RelayedFastMessage
-        - RelayedMessage
-        - SentMessage
-        - Unpaused
-      abis:
-        - name: L1CrossDomainMessenger
-          file: ./abis/L1CrossDomainMessenger.json
-      eventHandlers:
-        - event: FailedRelayedFastMessage(indexed address,address,bytes,uint256)
-          handler: handleFailedRelayedFastMessage
-        - event: FailedRelayedMessage(indexed bytes32)
-          handler: handleFailedRelayedMessage
-        - event: Initialized(uint8)
-          handler: handleInitialized
-        - event: MessageAllowed(indexed bytes32)
-          handler: handleMessageAllowed
-        - event: MessageBlocked(indexed bytes32)
-          handler: handleMessageBlocked
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: Paused(address)
-          handler: handlePaused
-        - event: RelayedFastMessage(indexed address,address,bytes,uint256)
-          handler: handleRelayedFastMessage
-        - event: RelayedMessage(indexed bytes32)
-          handler: handleRelayedMessage
-        - event: SentMessage(indexed address,address,bytes,uint256,uint256)
-          handler: handleSentMessage
-        - event: Unpaused(address)
-          handler: handleUnpaused
-      file: ./src/mappings/l1-cross-domain-messenger.ts
-  - kind: ethereum
-    name: L1StandardBridge
-    network: sepolia
-    source:
-      address: "0x1F032B938125f9bE411801fb127785430E7b3971"
-      abi: L1StandardBridge
-      startBlock: 5614239
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - ERC20DepositInitiated
-        - ERC20WithdrawalFinalized
-        - ETHDepositInitiated
-        - ETHWithdrawalFinalized
-      abis:
-        - name: L1StandardBridge
-          file: ./abis/L1StandardBridge.json
-      eventHandlers:
-        - event: ERC20DepositInitiated(indexed address,indexed address,indexed
-            address,address,uint256,bytes)
-          handler: handleERC20DepositInitiated
-        - event:
-            ERC20WithdrawalFinalized(indexed address,indexed address,indexed
-            address,address,uint256,bytes)
-          handler: handleERC20WithdrawalFinalized
-        - event: ETHDepositInitiated(indexed address,indexed address,uint256,bytes)
-          handler: handleETHDepositInitiated
-        - event: ETHWithdrawalFinalized(indexed address,indexed address,uint256,bytes)
-          handler: handleETHWithdrawalFinalized
-      file: ./src/mappings/l1-standard-bridge.ts
+ 
