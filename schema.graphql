@@ -1,17 +1,17 @@
-type Factory @entity {
+type Factory @entity(immutable: false) {
   id: ID!
   totalStaked: BigInt!
   totalPendingWithdrawal: BigInt!
   numOfCandidate: BigInt!
 }
 
-type StakingDayData @entity {
+type StakingDayData @entity(immutable: false) {
   id: ID!
   date: Int!
   totalStaked: BigInt!
 }
 
-type Candidate @entity {
+type Candidate @entity(immutable: false) {
   # candidate index
   id: ID!
   candidate: Bytes!
@@ -41,7 +41,7 @@ type Candidate @entity {
   withdrawalAndDeposited: [WithdrawalAndDeposited]! @derivedFrom(field: "candidate")
 }
 
-type CandidateAddOn @entity {
+type CandidateAddOn @entity(immutable: false) {
   id: ID!
   memo: String # string
   candidate: Candidate # address
@@ -58,7 +58,7 @@ type CandidateAddOn @entity {
   seigGiven: [SeigGiven2]! @derivedFrom(field: "candidateAddOn")
 }
 
-type User @entity {
+type User @entity(immutable: false) {
 	# user address
   id: ID!
 	# deposited amount of this user
@@ -76,7 +76,7 @@ type User @entity {
   withdrawalAndDeposited: [WithdrawalAndDeposited]! @derivedFrom(field: "user")
 }
 
-type UserStaked @entity {
+type UserStaked @entity(immutable: false) {
   id: ID!
   # user address
   user: User!
@@ -87,7 +87,7 @@ type UserStaked @entity {
   pendingWithdrawalAmount: BigInt!
 }
 
-type Transaction @entity {
+type Transaction @entity(immutable: false) {
   # txn hash
   id: ID!
   # block txn was included in
