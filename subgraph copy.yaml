@@ -73,7 +73,7 @@ dataSources:
     source:
       address: "0xDD9f0cCc044B0781289Ee318e5971b0139602C26"
       abi: DAOCommittee
-      startBlock: 12008824
+      startBlock: 18416550
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -84,7 +84,7 @@ dataSources:
         # - AgendaExecuted
         # - AgendaVoteCasted
         - CandidateContractCreated
-        - ChangedMember
+        # - ChangedMember
         # - ChangedMemo
         # - ChangedSlotMaximum
         # - ClaimedActivityReward
@@ -103,8 +103,8 @@ dataSources:
         #   handler: handleAgendaVoteCasted
         - event: CandidateContractCreated(indexed address,indexed address,string)
           handler: handleCandidateContractCreated
-        - event: ChangedMember(indexed uint256,address,indexed address)
-          handler: handleChangedMember
+        # - event: ChangedMember(indexed uint256,address,indexed address)
+        #   handler: handleChangedMember
         # - event: ChangedMemo(address,string)
         #   handler: handleChangedMemo
         # - event: ChangedSlotMaximum(indexed uint256,indexed uint256)

@@ -1,11 +1,12 @@
-import { AddedSeigAtLayer, Candidate, Factory, User, UserStaked } from '../../generated/schema';
+import { AddedSeigAtLayer, Candidate, Factory, User, UserStaked, CandidateAddOn, SeigGiven2 } from '../../generated/schema';
 import {
   // UpdatedSeigniorage as UpdatedSeigniorageEvent,
   CoinageCreated as CandidateEvent,
   AddedSeigAtLayer as AddedSeigEvent,
   CommissionRateSet as CommissionRateEvent,
+  SeigGiven2 as SeigGivenEvent
 } from "../../generated/SeigManager/SeigManager"
-import { ZERO_BI, BI_27 } from "../../constants";
+import { ZERO_BI, BI_27, ONE_BD, ZERO_BD } from "../../constants";
 import { loadTransaction } from '../../utils';
 import { updateDailyStakingData } from '../../utils/intervalUpdates';
 import { FIVE_BI, seigmanagerContract } from '../../utils/constants';
@@ -46,7 +47,7 @@ export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
     stakedUser.stakedAmount = stakedUser.stakedAmount.plus(seigPerUser)
     const userId = stakedUser.user
     // if (stakedUser.stakeOf.gt(minimumAmount)) {
-      stakedUser.stakeOf = seigmanagerContract.stakeOf1(Address.fromString(stakedUser.candidate), Address.fromString(userId))
+      stakedUser.stakeOf = seigmanagerContract.stakeOf(Address.fromString(stakedUser.candidate), Address.fromString(userId))
     // }
     let user = User.load(userId)
     if (user === null) user = new User(userId)
@@ -77,6 +78,31 @@ export function handleAddedSeigAtLayer (event: AddedSeigEvent): void {
   candidate.save()
   addedSeig.save()
   transaction.save()
+}
+
+export function handleSeigGiven (event: SeigGivenEvent): void {
+  const l2Id = event.params.layer2.toHexString()
+  let l2Candidate = CandidateAddOn.load(l2Id)
+  if (l2Candidate === null) l2Candidate = new CandidateAddOn(l2Id)
+  
+  const transaction = loadTransaction(event);
+  // const seigGivenId = l2Candidate.id + '#' + (l2Candidate.txCount.plus(ONE_BD)).toString()
+  const seigGiven = new SeigGiven2(transaction.id)
+  
+  seigGiven.layer2 = event.params.layer2
+  seigGiven.candidateAddOn = l2Candidate.id
+  seigGiven.totalSeig = event.params.totalSeig
+  seigGiven.stakedSeig = event.params.stakedSeig
+  seigGiven.unstakedSeig = event.params.unstakedSeig
+  seigGiven.powertonSeig = event.params.powertonSeig
+  seigGiven.pseig = event.params.pseig
+  seigGiven.l2TotalSeigs = event.params.l2TotalSeigs
+  seigGiven.layer2Seigs = event.params.layer2Seigs
+  seigGiven.blockTimestamp = transaction.timestamp
+  seigGiven.transaction = transaction.id
+  
+  l2Candidate.save()
+  seigGiven.save() 
 }
 
 export function handleCoinageCreated (event: CandidateEvent): void {

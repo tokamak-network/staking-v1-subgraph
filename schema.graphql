@@ -29,6 +29,7 @@ type Candidate @entity {
   prevTotalSupply: BigInt!
   nextTotalSupply: BigInt!
   seigs: BigInt!
+  candidateAddOn: CandidateAddOn
   # user info who are staking to this candidate
 	stakedUserList: [UserStaked!]!
   # derived values
@@ -37,8 +38,25 @@ type Candidate @entity {
   restaked: [Restaked]! @derivedFrom(field: "candidate")
 	withdrawal: [Withdrawal]! @derivedFrom(field: "candidate")
   addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "candidate")
+  withdrawalAndDeposited: [WithdrawalAndDeposited]! @derivedFrom(field: "candidate")
 }
 
+type CandidateAddOn @entity {
+  id: ID!
+  memo: String # string
+  candidate: Candidate # address
+  operator: Bytes
+  candidateAddOn: Bytes # address
+  wtonAmount: BigInt # uint256
+  rollupConfig: Bytes # address
+  bridge: Bytes
+  stateRoot: Bytes
+  txData: Bytes
+  portal: Bytes
+  registeredTime: BigInt
+  txCount: BigDecimal
+  seigGiven: [SeigGiven2]! @derivedFrom(field: "candidateAddOn")
+}
 
 type User @entity {
 	# user address
@@ -55,6 +73,7 @@ type User @entity {
   unstaked: [Unstaked]! @derivedFrom(field: "user")
   restaked: [Restaked]! @derivedFrom(field: "user")
 	withdrawal: [Withdrawal]! @derivedFrom(field: "user")
+  withdrawalAndDeposited: [WithdrawalAndDeposited]! @derivedFrom(field: "user")
 }
 
 type UserStaked @entity {
@@ -86,6 +105,8 @@ type Transaction @entity {
 	withdrawal: [Withdrawal]! @derivedFrom(field: "transaction")
   addedSeig: [AddedSeigAtLayer]! @derivedFrom(field: "transaction")
   changedMember: [ChangedMember]! @derivedFrom(field: "transaction")
+  seigGiven2: [SeigGiven2]! @derivedFrom(field: "transaction")
+  withdrawalAndDeposited: [WithdrawalAndDeposited]! @derivedFrom(field: "transaction")
 }
 
 type AddedSeigAtLayer @entity(immutable: true) {
@@ -115,6 +136,14 @@ type ChangedMember @entity(immutable: true) {
   slotIndex: BigInt!
   prevMember: Bytes!
   newMember: Bytes!
+}
+
+type ChangedMemo @entity(immutable: true) {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+  candidate: Bytes!
+  name: String!
 }
 
 type Staked @entity(immutable: true) {
@@ -150,6 +179,17 @@ type Restaked @entity(immutable: true) {
   amount: BigInt! # uint256
 }
 
+type WithdrawalAndDeposited @entity(immutable: true) {
+  id: ID!
+  transaction: Transaction!
+  timestamp: BigInt!
+  eventName: String!
+  candidate: Candidate!
+  user: User!
+  sender: Bytes! # address
+  amount: BigInt! # uint256
+}
+
 type Withdrawal @entity(immutable: true) {
   id: ID!
   transaction: Transaction!
@@ -170,17 +210,19 @@ type OnSnapshot @entity(immutable: true) {
   transactionHash: Bytes!
 }
 
-type SeigGiven @entity(immutable: true) {
-  id: Bytes!
+type SeigGiven2 @entity(immutable: true) {
+  id: ID!
   layer2: Bytes! # address
   totalSeig: BigInt! # uint256
   stakedSeig: BigInt! # uint256
   unstakedSeig: BigInt! # uint256
   powertonSeig: BigInt! # uint256
+  candidateAddOn: CandidateAddOn!
   pseig: BigInt! # uint256
-  blockNumber: BigInt!
+  l2TotalSeigs: BigInt!
+  layer2Seigs: BigInt!
   blockTimestamp: BigInt!
-  transactionHash: Bytes!
+  transaction: Transaction!
 }
 
 type UpdatedSeigniorage @entity(immutable: true) {
@@ -193,6 +235,153 @@ type UpdatedSeigniorage @entity(immutable: true) {
   oldCoinageFactor: BigInt! # uint256
   nextTotFactor: BigInt! # uint256
   nextCoinageFactor: BigInt! # uint256
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FailedRelayedFastMessage @entity(immutable: true) {
+  id: Bytes!
+  target: Bytes! # address
+  sender: Bytes! # address
+  message: Bytes! # bytes
+  messageNonce: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type FailedRelayedMessage @entity(immutable: true) {
+  id: Bytes!
+  msgHash: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Initialized @entity(immutable: true) {
+  id: Bytes!
+  version: Int! # uint8
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MessageAllowed @entity(immutable: true) {
+  id: Bytes!
+  _xDomainCalldataHash: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type MessageBlocked @entity(immutable: true) {
+  id: Bytes!
+  _xDomainCalldataHash: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OwnershipTransferred @entity(immutable: true) {
+  id: Bytes!
+  previousOwner: Bytes! # address
+  newOwner: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Paused @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RelayedFastMessage @entity(immutable: true) {
+  id: Bytes!
+  target: Bytes! # address
+  sender: Bytes! # address
+  message: Bytes! # bytes
+  messageNonce: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RelayedMessage @entity(immutable: true) {
+  id: Bytes!
+  msgHash: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SentMessage @entity(immutable: true) {
+  id: Bytes!
+  target: Bytes! # address
+  sender: Bytes! # address
+  message: Bytes! # bytes
+  messageNonce: BigInt! # uint256
+  gasLimit: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Unpaused @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ERC20DepositInitiated @entity(immutable: true) {
+  id: Bytes!
+  _l1Token: Bytes! # address
+  _l2Token: Bytes! # address
+  _from: Bytes! # address
+  _to: Bytes! # address
+  _amount: BigInt! # uint256
+  _data: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ERC20WithdrawalFinalized @entity(immutable: true) {
+  id: Bytes!
+  _l1Token: Bytes! # address
+  _l2Token: Bytes! # address
+  _from: Bytes! # address
+  _to: Bytes! # address
+  _amount: BigInt! # uint256
+  _data: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ETHDepositInitiated @entity(immutable: true) {
+  id: Bytes!
+  _from: Bytes! # address
+  _to: Bytes! # address
+  _amount: BigInt! # uint256
+  _data: Bytes! # bytes
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ETHWithdrawalFinalized @entity(immutable: true) {
+  id: Bytes!
+  _from: Bytes! # address
+  _to: Bytes! # address
+  _amount: BigInt! # uint256
+  _data: Bytes! # bytes
+  blockNumber: BigInt!
   blockTimestamp: BigInt!
   transactionHash: Bytes!
 }
