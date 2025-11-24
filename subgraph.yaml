@@ -76,7 +76,7 @@ dataSources:
     source:
       address: "0xDD9f0cCc044B0781289Ee318e5971b0139602C26"
       abi: DAOCommittee
-      startBlock: 18416550
+      startBlock: 12008820
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
