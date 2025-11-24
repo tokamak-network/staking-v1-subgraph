@@ -1,6 +1,6 @@
-import { UserStaked, Candidate } from '../../../../generated/schema';
+import { UserStaked, Candidate } from '@/schema';
 import { getCandidate } from "./candidate";
-import { ZERO_BI } from "../../../../constants";
+import { ZERO_BI } from "../../../../utils/constants";
 import { Transactions } from "../../../../types";
 
 export function handleUserStake(event: Transactions): void {
@@ -14,7 +14,7 @@ export function handleUserStake(event: Transactions): void {
     userStaked = new UserStaked(stakeId);
     userStaked.id = stakeId;
     userStaked.user = userId;
-    userStaked.candidateContract = candidate.id;
+    userStaked.candidate = candidate.id;
     userStaked.stakedAmount = ZERO_BI;
     userStaked.pendingWithdrawalAmount = ZERO_BI;
   }

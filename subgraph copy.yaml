@@ -36,8 +36,8 @@ dataSources:
           handler: handlerCommissionRateSet
         # - event: OnSnapshot(uint256)
         #   handler: handleOnSnapshot
-        - event: SeigGiven2(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
-          handler: handleSeigGiven
+        # - event: SeigGiven(indexed address,uint256,uint256,uint256,uint256,uint256)
+        #   handler: handleSeigGiven
         # - event: UpdatedSeigniorage(indexed address,uint256,uint256,uint256,uint256,uint256,uint256,uint256)
         #   handler: handleUpdatedSeigniorage
       file: ./src/mappings/seig-manager.ts
@@ -56,7 +56,6 @@ dataSources:
         - Deposited
         - WithdrawalProcessed
         - WithdrawalRequested
-        - WithdrawalAndDeposited
       abis:
         - name: DepositManager
           file: ./abis/DepositManager.json
@@ -67,8 +66,6 @@ dataSources:
           handler: handleWithdrawal
         - event: WithdrawalRequested(indexed address,address,uint256)
           handler: handleUnstaked
-        - event: WithdrawalAndDeposited(indexed address,address,uint256)
-          handler: handleWithdrawalAndDeposited
       file: ./src/mappings/deposit-manager.ts
   - kind: ethereum
     name: DAOCommittee
@@ -76,7 +73,7 @@ dataSources:
     source:
       address: "0xDD9f0cCc044B0781289Ee318e5971b0139602C26"
       abi: DAOCommittee
-      startBlock: 12008820
+      startBlock: 18416550
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.7
@@ -87,8 +84,8 @@ dataSources:
         # - AgendaExecuted
         # - AgendaVoteCasted
         - CandidateContractCreated
-        - ChangedMember
-        - ChangedMemo
+        # - ChangedMember
+        # - ChangedMemo
         # - ChangedSlotMaximum
         # - ClaimedActivityReward
         # - Layer2Registered
@@ -106,8 +103,8 @@ dataSources:
         #   handler: handleAgendaVoteCasted
         - event: CandidateContractCreated(indexed address,indexed address,string)
           handler: handleCandidateContractCreated
-        - event: ChangedMember(indexed uint256,address,indexed address)
-          handler: handleChangedMember
+        # - event: ChangedMember(indexed uint256,address,indexed address)
+        #   handler: handleChangedMember
         # - event: ChangedMemo(address,string)
         #   handler: handleChangedMemo
         # - event: ChangedSlotMaximum(indexed uint256,indexed uint256)
@@ -117,34 +114,3 @@ dataSources:
         # - event: Layer2Registered(indexed address,indexed address,string)
         #   handler: handleLayer2Registered
       file: ./src/mappings/dao-committee.ts
-  - kind: ethereum
-    name: Layer2Manager
-    network: mainnet
-    source:
-      address: "0xD6Bf6B2b7553c8064Ba763AD6989829060FdFC1D"
-      abi: Layer2Manager
-      startBlock: 22165890
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.7
-      language: wasm/assemblyscript
-      entities:
-        - RegisteredCandidateAddOn
-        # - SetMinimumInitialDepositAmount
-        # - SetAddresses
-      abis:
-        - name: Layer2Manager
-          file: ./abis/Layer2Manager.json
-        - name: Layer2Candidate
-          file: ./abis/Layer2Candidate.json
-        - name: SystemConfig
-          file: ./abis/SystemConfig.json
-      eventHandlers:
-        - event: RegisteredCandidateAddOn(address,uint256,string,address,address)
-          handler: handleRegisteredCandidateAddOn
-        # - event: SetMinimumInitialDepositAmount(uint256)
-        #   handler: handleSetMinimumInitialDepositAmount
-        # - event: SetAddresses(address,address,address,address,address,address,address,address)
-        #   handler: handleSetAddresses
-      file: ./src/mappings/layer-2-manager.ts
- 

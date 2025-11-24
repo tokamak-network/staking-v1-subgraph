@@ -1,19 +1,20 @@
-import { getCandidate, handleCandidate } from "./handlers/candidate";
-import { handleUser } from "./handlers/user";
-import { handleUserStake } from "./handlers/userStake";
+// import { getCandidate, handleCandidate } from "./handlers/candidate";
+// import { handleUser } from "./handlers/user";
+// import { handleUserStake } from "./handlers/userStake";
 import { handleStake } from "./handlers/stake";
-import { handleRestake } from "./handlers/restake";
+// import { handleRestake } from "./handlers/restake";
 import { handleUnstake } from "./handlers/unstake";
 import { handleWithdraw } from "./handlers/withdraw";
+import { Deposited } from "../../../generated/DepositManger/DepositManger";
 
-export class stakingV1Event<T> {
-  private _event: T;
+export class stakingV1Event<T extends Deposited> {
+  private _event: T ;
 
   constructor(event: T) {
     this._event = event;
   }
 
-  get handleEvent() {
+  get handleEvent(): any {
     return {
       /**
        * @description save each event when it's happened

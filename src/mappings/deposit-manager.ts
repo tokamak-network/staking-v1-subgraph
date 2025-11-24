@@ -3,27 +3,322 @@ import {
   Deposited as StakedEvent,
   WithdrawalRequested as UnstakedEvent,
   WithdrawalProcessed as WithdrawalEvent,
-} from "../../generated/DepositManger/DepositManger";
-import { stakingV1Event } from "../lib/eventApi";
+  WithdrawalAndDeposited as WithdrawalAndDepositedEvent
+} from "../../generated/DepositManager/DepositManager";
+import { loadTransaction } from "../../utils";
+// import { stakingV1Event } from "../lib/eventApi";
+import { Candidate, Staked, User, UserStaked, Factory, Unstaked, Withdrawal, WithdrawalAndDeposited } from '../../generated/schema';
+import { ZERO_BI } from "../../constants";
+import { updateDailyStakingData } from '../../utils/intervalUpdates';
+import { FIVE_BI, seigmanagerContract } from '../../utils/constants';
+import { Address } from "@graphprotocol/graph-ts"
+
+
+// export function handleStaked(event: StakedEvent): void {
+//   const handler = new stakingV1Event(event);
+//   return handler.handleEvent.stake();
+// }
+
+// export function handleUnstaked(event: UnstakedEvent): void {
+  // const handler = new stakingV1Event(event);
+  // return handler.handleEvent.unstake();
+// }
+
+export function handleRestaked(event: RestakedEvent): void {
+  // const handler = new stakingV1Event(event);
+  // return handler.handleEvent.restake();
+}
+
+// export function handleWithdrawal(event: WithdrawalEvent): void {
+  // const handler = new stakingV1Event(event);
+  // return handler.handleEvent.withdraw();
+// }
 
 export function handleStaked(event: StakedEvent): void {
-  const handler = new stakingV1Event(event);
-  return handler.handleEvent.stake();
+  let factory = Factory.load('1');
+  if (factory == null) factory = new Factory('1')
+  
+  factory.totalStaked = factory.totalStaked.plus(event.params.amount)
+
+  const transaction = loadTransaction(event);
+  let candidate = Candidate.load(event.params.layer2.toHexString());
+  if (candidate == null) {
+    candidate = new Candidate(event.params.layer2.toHexString())
+    candidate.stakedAmount = ZERO_BI
+    candidate.stakedUserList = [];
+    candidate.prevTotalSupply = ZERO_BI
+    candidate.nextTotalSupply = ZERO_BI
+  } 
+  candidate.stakedAmount = candidate.stakedAmount.plus(event.params.amount)
+
+  const staked = new Staked(transaction.id + '#' + transaction.numEvent.toString());
+
+  staked.transaction = transaction.id;
+  staked.timestamp = transaction.timestamp;
+  staked.candidate = candidate.id;
+  staked.sender = event.params.depositor
+  staked.eventName = 'Stake'
+  
+  staked.amount = event.params.amount;
+
+  let user = User.load(event.params.depositor.toHexString());
+
+  if (user === null) {
+    user = new User(event.params.depositor.toHexString());
+    user.id = event.params.depositor.toHexString();
+    user.totalStaked = ZERO_BI;
+    user.pendingWithdrawalAmount = ZERO_BI;
+    user.totalEarnedSeig = ZERO_BI
+  }
+  user.totalStaked = user.totalStaked.plus(event.params.amount);
+  user.candidate = event.params.layer2.toHexString()
+
+  staked.user = user.id
+
+  const userId = event.params.depositor.toHexString();
+  const stakeId = userId
+    .concat("-")
+    .concat(event.params.layer2.toHexString());
+
+  let userStaked = UserStaked.load(stakeId);
+  if (userStaked === null) {
+    userStaked = new UserStaked(stakeId);
+    userStaked.id = stakeId;
+    userStaked.user = userId;
+    userStaked.candidate = candidate.id;
+    userStaked.stakedAmount = ZERO_BI;
+    userStaked.stakeOf = ZERO_BI;
+    userStaked.pendingWithdrawalAmount = ZERO_BI;
+  }
+  userStaked.stakedAmount = userStaked.stakedAmount.plus(event.params.amount);
+  userStaked.stakeOf = userStaked.stakeOf.plus(event.params.amount);
+  // user.userStaked = stakeId
+
+  if (!candidate.stakedUserList.includes(stakeId)) {
+    let newList = candidate.stakedUserList
+    newList.push(stakeId)
+    candidate.stakedUserList = newList
+  }
+  factory.save()
+  updateDailyStakingData(event)
+
+  staked.save();
+  user.save();
+  userStaked.save();
+  candidate.save();
 }
 
 export function handleUnstaked(event: UnstakedEvent): void {
-  const handler = new stakingV1Event(event);
-  return handler.handleEvent.unstake();
-}
+  let factory = Factory.load('1');
+  if (factory == null) {
+    factory = new Factory('1')
+  } 
+  factory.totalStaked = factory.totalStaked.minus(event.params.amount)
 
-export function handleRestaked(event: RestakedEvent): void {
-  const handler = new stakingV1Event(event);
-  return handler.handleEvent.restake();
+  const transaction = loadTransaction(event);
+  let candidate = Candidate.load(event.params.layer2.toHexString());
+  if (candidate == null) {
+    candidate = new Candidate(event.params.layer2.toHexString())
+  } 
+  candidate.stakedAmount = candidate.stakedAmount.minus(event.params.amount)
+  candidate.pendingWithdrawalAmount = candidate.pendingWithdrawalAmount.plus(event.params.amount)
+
+  const unstaked = new Unstaked(transaction.id + '#' + transaction.numEvent.toString());
+
+  unstaked.transaction = transaction.id;
+  unstaked.timestamp = transaction.timestamp;
+  unstaked.candidate = candidate.id;
+  unstaked.sender = event.params.depositor
+  unstaked.eventName = 'Unstake'
+  
+  unstaked.amount = event.params.amount;
+
+  let user = User.load(event.params.depositor.toHexString());
+
+  if (user === null) {
+    user = new User(event.params.depositor.toHexString());
+    user.id = event.params.depositor.toHexString();
+    user.totalStaked = ZERO_BI;
+    user.pendingWithdrawalAmount = ZERO_BI;
+    user.totalEarnedSeig = ZERO_BI
+  }
+  user.totalStaked = user.totalStaked.minus(event.params.amount);
+  user.pendingWithdrawalAmount = user.pendingWithdrawalAmount.plus(event.params.amount);
+  user.candidate = event.params.layer2.toHexString()
+
+  unstaked.user = user.id
+
+  const userId = event.params.depositor.toHexString();
+  const stakeId = userId
+    .concat("-")
+    .concat(event.params.layer2.toHexString());
+
+  let userStaked = UserStaked.load(stakeId);
+  if (userStaked === null) {
+    userStaked = new UserStaked(stakeId);
+    userStaked.id = stakeId;
+    userStaked.user = userId;
+    userStaked.candidate = candidate.id;
+    userStaked.stakedAmount = ZERO_BI;
+    userStaked.stakeOf = ZERO_BI;
+    userStaked.pendingWithdrawalAmount = ZERO_BI;
+  }
+  userStaked.stakedAmount = userStaked.stakedAmount.minus(event.params.amount);
+  userStaked.stakeOf = userStaked.stakeOf.minus(event.params.amount)
+  
+  userStaked.pendingWithdrawalAmount = userStaked.pendingWithdrawalAmount.plus(event.params.amount);
+  // user.userStaked = stakeId
+
+  if (!candidate.stakedUserList.includes(stakeId)) {
+    let newList = candidate.stakedUserList
+    newList.push(stakeId)
+    candidate.stakedUserList = newList
+  }
+  factory.save()
+  updateDailyStakingData(event)
+
+  unstaked.save();
+  user.save();
+  userStaked.save();
+  candidate.save();
 }
 
 export function handleWithdrawal(event: WithdrawalEvent): void {
-  const handler = new stakingV1Event(event);
-  return handler.handleEvent.withdraw();
+  let factory = Factory.load('1');
+  if (factory == null) {
+    factory = new Factory('1')
+  } 
+  // factory.totalStaked = factory.totalStaked.minus(event.params.amount)
+
+  const transaction = loadTransaction(event);
+  let candidate = Candidate.load(event.params.layer2.toHexString());
+  if (candidate == null) {
+    candidate = new Candidate(event.params.layer2.toHexString())
+  } 
+  candidate.pendingWithdrawalAmount = candidate.pendingWithdrawalAmount.minus(event.params.amount)
+
+  const withdrawal = new Withdrawal(transaction.id + '#' + transaction.numEvent.toString());
+
+  withdrawal.transaction = transaction.id;
+  withdrawal.timestamp = transaction.timestamp;
+  withdrawal.candidate = candidate.id;
+  withdrawal.sender = event.params.depositor
+  withdrawal.eventName = 'Withdraw'
+  
+  withdrawal.amount = event.params.amount;
+
+  let user = User.load(event.params.depositor.toHexString());
+
+  if (user === null) {
+    user = new User(event.params.depositor.toHexString());
+    user.id = event.params.depositor.toHexString();
+    user.totalStaked = ZERO_BI;
+    user.pendingWithdrawalAmount = ZERO_BI;
+    user.totalEarnedSeig = ZERO_BI
+  }
+  user.pendingWithdrawalAmount = user.pendingWithdrawalAmount.minus(event.params.amount);
+  user.candidate = event.params.layer2.toHexString()
+
+  withdrawal.user = user.id
+
+  const userId = event.params.depositor.toHexString();
+  const stakeId = userId
+    .concat("-")
+    .concat(event.params.layer2.toHexString());
+
+  let userStaked = UserStaked.load(stakeId);
+  if (userStaked === null) {
+    userStaked = new UserStaked(stakeId);
+    userStaked.id = stakeId;
+    userStaked.user = userId;
+    userStaked.candidate = candidate.id;
+    userStaked.stakedAmount = ZERO_BI;
+    userStaked.pendingWithdrawalAmount = ZERO_BI;
+  }
+  userStaked.pendingWithdrawalAmount = userStaked.pendingWithdrawalAmount.minus(event.params.amount);
+  // user.userStaked = stakeId
+
+  if (!candidate.stakedUserList.includes(stakeId)) {
+    let newList = candidate.stakedUserList
+    newList.push(stakeId)
+    candidate.stakedUserList = newList
+  }
+  factory.save()
+  updateDailyStakingData(event)
+
+  withdrawal.save();
+  user.save();
+  userStaked.save();
+  candidate.save();
+}
+
+export function handleWithdrawalAndDeposited(event: WithdrawalAndDepositedEvent): void {
+  let factory = Factory.load('1');
+  if (factory == null) {
+    factory = new Factory('1')
+  } 
+  // factory.totalStaked = factory.totalStaked.minus(event.params.amount)
+
+  const transaction = loadTransaction(event);
+  let candidate = Candidate.load(event.params.layer2.toHexString());
+  if (candidate == null) {
+    candidate = new Candidate(event.params.layer2.toHexString())
+  } 
+  candidate.pendingWithdrawalAmount = candidate.pendingWithdrawalAmount.minus(event.params.amount)
+
+  const withdrawal = new WithdrawalAndDeposited(transaction.id + '#' + transaction.numEvent.toString());
+
+  withdrawal.transaction = transaction.id;
+  withdrawal.timestamp = transaction.timestamp;
+  withdrawal.candidate = candidate.id;
+  withdrawal.sender = event.params.account
+  withdrawal.eventName = 'WithdrawL2'
+  
+  withdrawal.amount = event.params.amount;
+
+  let user = User.load(event.params.account.toHexString());
+
+  if (user === null) {
+    user = new User(event.params.account.toHexString());
+    user.id = event.params.account.toHexString();
+    user.totalStaked = ZERO_BI;
+    user.pendingWithdrawalAmount = ZERO_BI;
+    user.totalEarnedSeig = ZERO_BI
+  }
+
+  user.candidate = event.params.layer2.toHexString()
+
+  withdrawal.user = user.id
+
+  const userId = event.params.account.toHexString();
+  const stakeId = userId
+    .concat("-")
+    .concat(event.params.layer2.toHexString());
+
+  let userStaked = UserStaked.load(stakeId);
+  if (userStaked === null) {
+    userStaked = new UserStaked(stakeId);
+    userStaked.id = stakeId;
+    userStaked.user = userId;
+    userStaked.candidate = candidate.id;
+    userStaked.stakedAmount = ZERO_BI;
+    userStaked.pendingWithdrawalAmount = ZERO_BI;
+  }
+  // userStaked.pendingWithdrawalAmount = userStaked.pendingWithdrawalAmount.minus(event.params.amount);
+  // user.userStaked = stakeId
+
+  if (!candidate.stakedUserList.includes(stakeId)) {
+    let newList = candidate.stakedUserList
+    newList.push(stakeId)
+    candidate.stakedUserList = newList
+  }
+  factory.save()
+  updateDailyStakingData(event)
+
+  withdrawal.save();
+  user.save();
+  userStaked.save();
+  candidate.save();
 }
 
 // export function handleRestaked(event: RestakedEvent): void {
@@ -47,7 +342,7 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
 //   // tx update
 //   let transaction = loadTransaction(event);
 //   let restake = new Restaked(
-//     transaction.id + "#" + candidate.txCount.toString()
+//     transaction.id
 //   );
 //   restake.transaction = transaction.id;
 //   restake.timestamp = transaction.timestamp;
@@ -120,7 +415,7 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
 //   // tx update
 //   let transaction = loadTransaction(event);
 //   let unstake = new Unstaked(
-//     transaction.id + "#" + candidate.txCount.toString()
+//     transaction.id
 //   );
 //   unstake.transaction = transaction.id;
 //   unstake.timestamp = transaction.timestamp;
@@ -187,7 +482,7 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
 //   // tx update
 //   let transaction = loadTransaction(event);
 //   let withdraw = new Withdrawal(
-//     transaction.id + "#" + candidate.txCount.toString()
+//     transaction.id
 //   );
 //   withdraw.transaction = transaction.id;
 //   withdraw.timestamp = transaction.timestamp;

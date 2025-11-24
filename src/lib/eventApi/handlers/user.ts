@@ -1,7 +1,7 @@
-import { User } from "../../../../generated/schema";
+import { User } from "@/schema";
 import { getCandidate } from "./candidate";
-import { ZERO_BI } from "../../../../constants";
-import { Transactions } from "../../../../types";
+import { ZERO_BI } from "@/constants";
+import { Transactions } from "@/types";
 
 //tx update
 export function handleUser(event: Transactions): void {

@@ -1,21 +1,20 @@
-import { Staked, Unstaked } from "../../../../generated/schema";
-import { loadTransaction } from "../../../../utils";
-import { getCandidate } from "./candidate";
-import { WithdrawalRequested as UnstakedEvent } from "../../../../generated/DepositManger/DepositManger";
+import { loadTransaction } from "@/utils";
+// import { getCandidate } from "./candidate";
+import { WithdrawalRequested as UnstakedEvent } from "@/deposit-manager";
 
 //tx update
 export function handleUnstake(event: UnstakedEvent): void {
-  const candidate = getCandidate(event);
-  const transaction = loadTransaction(event);
-  const unstake = new Unstaked(
-    transaction.id + "#" + candidate.txCount.toString()
-  );
-  unstake.transaction = transaction.id;
-  unstake.timestamp = transaction.timestamp;
-  unstake.candidate = candidate.id;
-  unstake.amount = event.params.amount;
+  // const candidate = getCandidate(event);
+  // const transaction = loadTransaction(event);
+  // const unstake = new Unstaked(
+  //   transaction.id + "#" + candidate.txCount.toString()
+  // );
+  // unstake.transaction = transaction.id;
+  // unstake.timestamp = transaction.timestamp;
+  // unstake.candidate = candidate.id;
+  // unstake.amount = event.params.amount;
 
-  return unstake.save();
+  // return unstake.save();
 }
 
 // export function handleUnstaked(event: UnstakedEvent): void {

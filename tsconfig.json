@@ -2,11 +2,13 @@
   "extends": "@graphprotocol/graph-ts/types/tsconfig.base.json",
   "include": ["src", "types"],
   "compilerOptions": {
+    "moduleResolution": "Node", // or "Classic"
     "baseUrl": "./",
     "paths": {
       "@/generated": ["./generated"],
       "@/schema": ["./generated/schema"],
       "@/candidate": ["./generated/Candidate/Candidate"],
+      "@/deposit-manager": ["./generated/DepositManager/DepositManager"],
       "@/constants": ["./constants"],
       "@/utils": ["./utils"],
       "@/types": ["./types"]

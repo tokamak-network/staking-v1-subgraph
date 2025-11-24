@@ -1,6 +1,7 @@
-import { Factory, Candidate } from '../../generated/schema'
+import { Factory, Candidate, Member, ChangedMember, ChangedMemo } from '../../generated/schema'
 import { ZERO_BI, ONE_BI, ZERO_BD, ADDRESS_ZERO } from '../../utils/constants'
-import { CandidateContractCreated } from '../../generated/DAOCommittee/DAOCommittee';
+import { CandidateContractCreated, ChangedMember as ChangedMemberEvent } from '../../generated/DAOCommittee/DAOCommittee';
+import { loadTransaction } from '../../utils';
 
 export function handleCandidateContractCreated (event: CandidateContractCreated): void {
   let factory = Factory.load('1')
@@ -14,19 +15,63 @@ export function handleCandidateContractCreated (event: CandidateContractCreated)
   factory.numOfCandidate = factory.numOfCandidate.plus(ONE_BI)
   // factory.factoryCandidateCount = factory.factoryCandidateCount.plus(ONE_BI)
 
-  let candidate = new Candidate(event.params.candidateContract) as Candidate
+  let candidate = new Candidate(event.params.candidateContract.toHexString()) as Candidate
   
-  candidate.id = event.params.candidateContract
+  candidate.id = event.params.candidateContract.toHexString()
   candidate.candidate = event.params.candidate
   candidate.candidateContract = event.params.candidateContract
   candidate.txCount = ZERO_BI
   candidate.name = event.params.memo.toString()
-  candidate.commissionRate = ZERO_BD
+  candidate.commissionRate = ZERO_BI
+  candidate.stakedUserList = []
+  candidate.prevTotalSupply = ZERO_BI
+  candidate.nextTotalSupply = ZERO_BI
+  candidate.seigs = ZERO_BI
   
-  // candidate.txCount = ZERO_BI
+  // candidate.txCount = ZERO_BIts
   candidate.stakedAmount = ZERO_BI
   candidate.pendingWithdrawalAmount = ZERO_BI
 
   candidate.save()
   factory.save()
 }
+
+export function handleChangedMember (event: ChangedMemberEvent): void {
+
+  const transaction = loadTransaction(event);
+  const changedMember = new ChangedMember(transaction.id + '#' + transaction.numEvent.toString())
+  changedMember.prevMember = event.params.prevMember;
+  changedMember.transaction = transaction.id;
+  changedMember.timestamp = transaction.timestamp;
+  changedMember.newMember = event.params.newMember;
+  changedMember.slotIndex = event.params.slotIndex
+
+  let member = Member.load(event.params.slotIndex.toString());
+  if (member === null) {
+    member = new Member(event.params.slotIndex.toString())
+    member.candidate = event.params.newMember.toHexString();
+  }
+  member.candidate = event.params.newMember.toHexString();
+
+  member.save()
+  changedMember.save()
+  transaction.save()
+
+}
+
+// export function handleChangeMemo (event: ChangedMemberEvent): void {
+//   const transaction = loadTransaction(event);
+//   const changedMemo = new ChangedMemo(transaction.id + '#' + transaction.numEvent.toString())
+//   changedMemo
+//   changedMemo.transaction = transaction.id;
+//   changedMemo.timestamp = transaction.timestamp;
+
+//   let candidate = Candidate.load(event.params.slotIndex.toString());
+//   if (candidate === null) {
+//     candidate = new Candidate(event.params.)
+//   }
+//   candidate.save()
+//   changedMemo.save()
+//   transaction.save()
+
+// }

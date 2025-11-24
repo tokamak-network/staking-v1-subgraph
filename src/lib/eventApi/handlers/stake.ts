@@ -6,9 +6,9 @@ import {
   Restaked,
   Withdrawal,
   Unstaked,
-} from "../../../../generated/schema";
-import { Deposited as StakedEvent } from "../../../../generated/DepositManger/DepositManger";
-import { loadTransaction } from "../../../../utils";
+} from "@/schema";
+import { Deposited as StakedEvent } from "@/deposit-manager";
+import { loadTransaction } from "@/utils";
 import { getCandidate } from "./candidate";
 import { handleUser } from './user';
 import { handleUserStake } from './userStake';
